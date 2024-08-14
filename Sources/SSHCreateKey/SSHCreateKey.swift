@@ -4,13 +4,12 @@ import Foundation
 
 @MainActor
 public final class SSHCreateKey {
-    
     // var offsiteServer = ""
     // var offsiteUsername = ""
 
     var sharedsshport: String?
     var sharedsshkeypathandidentityfile: String?
-    
+
     public var rsaStringPath: String?
     // Arrays listing all key files
     public var keyFileStrings: [String]? {
@@ -91,14 +90,14 @@ public final class SSHCreateKey {
                 }
                 sshkeypathandidentityfilesplit.remove(at: sshkeypathandidentityfilesplit.count - 1)
                 return userHomeDirectoryPath +
-                String(sshkeypathandidentityfilesplit.joined(separator: "/").dropFirst())
+                    String(sshkeypathandidentityfilesplit.joined(separator: "/").dropFirst())
 
             } else {
                 // If anything goes wrong set to default global values
-                return userHomeDirectoryPath
+                return userHomeDirectoryPath + "./ssh"
             }
         } else {
-            return userHomeDirectoryPath
+            return (userHomeDirectoryPath ?? "") + "./ssh"
         }
     }
 
@@ -125,13 +124,13 @@ public final class SSHCreateKey {
             do {
                 try fm.createDirectory(at: sshkeypathlURL, withIntermediateDirectories: true, attributes: nil)
             } catch let e {
-                let error = e
+                // _ = e
                 // propogateerror(error: error)
                 return
             }
         }
     }
-    
+
     // Test create SSH catalog
     // If ssh catalog exists - bail out, no need to create
     public func testcreatesshkeyrootpath() -> URL? {
@@ -146,7 +145,8 @@ public final class SSHCreateKey {
     // ssh-address = "backup@server.com"
     // ssh-copy-id -i $ssh-keypath -p port $ssh-address
     public func argumentssshcopyid(offsiteServer: String,
-                                   offsiteUsername: String) -> String {
+                                   offsiteUsername: String) -> String
+    {
         var args = [String]()
         let command = "/usr/bin/ssh-copy-id"
         args.append(command)
@@ -160,14 +160,15 @@ public final class SSHCreateKey {
             args.append("-p")
             args.append(sharedsshport)
         }
-        args.append( offsiteUsername + "@" + offsiteServer)
+        args.append(offsiteUsername + "@" + offsiteServer)
         return args.joined(separator: " ")
     }
 
     // Check if pub key exists on remote server
     // ssh -p port -i $ssh-keypath $ssh-address
     public func argumentscheckremotepubkey(offsiteServer: String,
-                                           offsiteUsername: String) -> String {
+                                           offsiteUsername: String) -> String
+    {
         var args = [String]()
         let command = "/usr/bin/ssh"
         args.append(command)
@@ -182,7 +183,7 @@ public final class SSHCreateKey {
             args.append(sharedsshkeypathandidentityfile)
         }
 
-        args.append( offsiteUsername + "@" + offsiteServer)
+        args.append(offsiteUsername + "@" + offsiteServer)
         return args.joined(separator: " ")
     }
 
@@ -203,7 +204,7 @@ public final class SSHCreateKey {
         }
         return args
     }
-    
+
     // Check if rsa pub key exists
     public func islocalpublicrsakeypresent() throws -> Bool {
         guard keyFileStrings != nil else { return false }
@@ -227,7 +228,7 @@ public final class SSHCreateKey {
         return true
     }
 
-    public init( sharedsshport: String?,
+    public init(sharedsshport: String?,
                 sharedsshkeypathandidentityfile: String?)
     {
         self.sharedsshport = sharedsshport
