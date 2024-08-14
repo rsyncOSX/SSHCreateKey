@@ -94,10 +94,10 @@ public final class SSHCreateKey {
 
             } else {
                 // If anything goes wrong set to default global values
-                return userHomeDirectoryPath + "./ssh"
+                return userHomeDirectoryPath + "/.ssh"
             }
         } else {
-            return (userHomeDirectoryPath ?? "") + "./ssh"
+            return (userHomeDirectoryPath ?? "") + "/.ssh"
         }
     }
 
@@ -201,6 +201,10 @@ public final class SSHCreateKey {
            sharedsshkeypathandidentityfile.isEmpty == false
         {
             args.append(sharedsshkeypathandidentityfile)
+        } else {
+            if let keypathonly, let identityfile {
+                args.append(keypathonly + "/" + identityfile)
+            }
         }
         return args
     }
