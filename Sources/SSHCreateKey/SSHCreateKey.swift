@@ -76,6 +76,7 @@ public final class SSHCreateKey {
     }
 
     // Used when creating ssh keypath
+    // keypathonly is full keypath only like /Users/thomas/.ssh_global
     public var keypathonly: String? {
         if let sharedsshkeypathandidentityfile,
            let userHomeDirectoryPath
@@ -115,16 +116,11 @@ public final class SSHCreateKey {
     // If ssh catalog exists - bail out, no need to create
     public func createsshkeyrootpath() {
         let fm = FileManager.default
-        if let keypathonly,
-           let userHomeDirectoryPath
-        {
-            let sshkeypathString = userHomeDirectoryPath + "/." + keypathonly
-            guard fm.keypathlocationExists(at: sshkeypathString, kind: .folder) == false else {
+        if let keypathonly {
+            guard fm.keypathlocationExists(at: keypathonly, kind: .folder) == false else {
                 return
             }
-
-            let userHomeDirectoryPathURL = URL(fileURLWithPath: userHomeDirectoryPath)
-            let sshkeypathlURL = userHomeDirectoryPathURL.appendingPathComponent("/." + keypathonly)
+            let sshkeypathlURL = URL(fileURLWithPath: keypathonly)
 
             do {
                 try fm.createDirectory(at: sshkeypathlURL, withIntermediateDirectories: true, attributes: nil)
@@ -134,6 +130,16 @@ public final class SSHCreateKey {
                 return
             }
         }
+    }
+    
+    // Test create SSH catalog
+    // If ssh catalog exists - bail out, no need to create
+    public func testcreatesshkeyrootpath() -> URL? {
+        if let keypathonly {
+            let sshkeypathlURL = URL(fileURLWithPath: keypathonly)
+            return sshkeypathlURL
+        }
+        return nil
     }
 
     // Set parameters for ssh-copy-id for copy public ssh key to server
