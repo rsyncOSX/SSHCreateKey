@@ -160,7 +160,7 @@ public final class SSHCreateKey {
             args.append("-p")
             args.append(sharedsshport)
         } else {
-            args.append(identityfile ?? "")
+            args.append(sshkeypathandidentityfile ?? "")
         }
         args.append(offsiteUsername + "@" + offsiteServer)
         return args.joined(separator: " ")

@@ -21,6 +21,8 @@ import Testing
             print(arg5 ?? "")
             let arg6 = await sshcreatekey.sshkeypathandidentityfile
             print(arg6 ?? "")
+            let arg7 = await sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
+            print(arg7)
         }
     }
     
@@ -43,6 +45,8 @@ import Testing
             print(arg5 ?? "")
             let arg6 = await sshcreatekey.sshkeypathandidentityfile
             print(arg6 ?? "")
+            let arg7 = await sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
+            print(arg7)
         }
     }
 
