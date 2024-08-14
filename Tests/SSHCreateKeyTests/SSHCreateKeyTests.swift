@@ -19,6 +19,8 @@ import Testing
             print(arg4 ?? "")
             let arg5 = await sshcreatekey.userHomeDirectoryPath
             print(arg5 ?? "")
+            let arg6 = await sshcreatekey.sshkeypathandidentityfile
+            print(arg6 ?? "")
         }
     }
     
@@ -39,6 +41,8 @@ import Testing
             print(arg4 ?? "")
             let arg5 = await sshcreatekey.userHomeDirectoryPath
             print(arg5 ?? "")
+            let arg6 = await sshcreatekey.sshkeypathandidentityfile
+            print(arg6 ?? "")
         }
     }
 

@@ -28,7 +28,7 @@ public final class SSHCreateKey {
         return nil
     }
 
-    // Path to ssh keypath
+    // Path to ssh keypath including identityfile
     public var sshkeypathandidentityfile: String? {
         if let sharedsshkeypathandidentityfile,
            let userHomeDirectoryPath
@@ -39,16 +39,16 @@ public final class SSHCreateKey {
                 let sshkeypathandidentityfilesplit = sharedsshkeypathandidentityfile.split(separator: "/")
                 guard sshkeypathandidentityfilesplit.count > 2 else {
                     // If anything goes wrong set to default global values
-                    return userHomeDirectoryPath + "/.ssh"
+                    return userHomeDirectoryPath + "/.ssh/" + "/" + (identityfile ?? "")
                 }
                 return userHomeDirectoryPath + sshkeypathandidentityfilesplit.joined(separator: "/").dropFirst()
 
             } else {
                 // If anything goes wrong set to default global values
-                return userHomeDirectoryPath + "/.ssh"
+                return userHomeDirectoryPath + "/.ssh" + "/" + (identityfile ?? "")
             }
         } else {
-            return (userHomeDirectoryPath ?? "") + "/.ssh"
+            return (userHomeDirectoryPath ?? "") + "/.ssh" + "/" + (identityfile ?? "")
         }
     }
 
@@ -159,6 +159,8 @@ public final class SSHCreateKey {
             args.append(sharedsshkeypathandidentityfile)
             args.append("-p")
             args.append(sharedsshport)
+        } else {
+            args.append(identityfile ?? "")
         }
         args.append(offsiteUsername + "@" + offsiteServer)
         return args.joined(separator: " ")
