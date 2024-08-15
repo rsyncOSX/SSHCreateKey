@@ -8,107 +8,70 @@ import Testing
         let loadtestdata = ReadTestdataFromGitHub()
         await loadtestdata.getdata()
         testconfigurations = loadtestdata.testconfigurations
-        if let testconfigurations {
-            
-            let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
-                                                  sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
 
-            let arg3 = await sshcreatekey.keypathonly
-            print(arg3 ?? "")
-            let arg4 = await sshcreatekey.identityfile
-            print(arg4 ?? "")
-            let arg5 = await sshcreatekey.userHomeDirectoryPath
-            print(arg5 ?? "")
-            let arg6 = await sshcreatekey.sshkeypathandidentityfile
-            print(arg6 ?? "")
-            let arg7 = await sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
-            print(arg7)
-        }
+        let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
+                                              sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
+        let arg3 = await sshcreatekey.keypathonly
+        #expect(ArgumentsCreatSSHKeys().keypathglobal == arg3)
+        let arg4 = await sshcreatekey.identityfile
+        #expect(ArgumentsCreatSSHKeys().identityfileglobl == arg4)
+        let arg5 = await sshcreatekey.userHomeDirectoryPath
+        #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathglobal == arg5)
+        let arg6 = await sshcreatekey.sshkeypathandidentityfile
+        #expect(ArgumentsCreatSSHKeys().sshkeypathandidentityfileglobal == arg6)
+        let arg7 = await sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
+        #expect(ArgumentsCreatSSHKeys().argumentssshcopyidglobal == arg7)
     }
-    
+
     @Test func LodaDataCreateSSHKeysdefault() async {
         let loadtestdata = ReadTestdataFromGitHub()
         await loadtestdata.getdata()
         testconfigurations = loadtestdata.testconfigurations
-        if let testconfigurations {
-            
-            let port = -1
-            let identityfile: String? = nil
-            let sshcreatekey =  await SSHCreateKey(sharedsshport: String(port),
-                                                  sharedsshkeypathandidentityfile: identityfile)
 
-            let arg3 = await sshcreatekey.keypathonly
-            print(arg3 ?? "")
-            let arg4 = await sshcreatekey.identityfile
-            print(arg4 ?? "")
-            let arg5 = await sshcreatekey.userHomeDirectoryPath
-            print(arg5 ?? "")
-            let arg6 = await sshcreatekey.sshkeypathandidentityfile
-            print(arg6 ?? "")
-            let arg7 = await sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
-            print(arg7)
-        }
+        // Sett Shareddata to nil oe default values
+        let port = -1
+        let identityfile: String? = nil
+        let sshcreatekey = await SSHCreateKey(sharedsshport: String(port),
+                                              sharedsshkeypathandidentityfile: identityfile)
+        let arg3 = await sshcreatekey.keypathonly
+        #expect(ArgumentsCreatSSHKeys().keypathdefault == arg3)
+        let arg4 = await sshcreatekey.identityfile
+        #expect(ArgumentsCreatSSHKeys().identityfiledefault == arg4)
+        let arg5 = await sshcreatekey.userHomeDirectoryPath
+        #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathdefault == arg5)
+        let arg6 = await sshcreatekey.sshkeypathandidentityfile
+        #expect(ArgumentsCreatSSHKeys().sshkeypathandidentityfiledefault == arg6)
+        let arg7 = await sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
+        #expect(ArgumentsCreatSSHKeys().argumentssshcopyiddefault == arg7)
     }
-
 
     @Test func createkeys() async {
         let loadtestdata = ReadTestdataFromGitHub()
         await loadtestdata.getdata()
-        testconfigurations = loadtestdata.testconfigurations
-        if let testconfigurations {
-
-            do {
-                let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
-                                                      sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
-                let present = try await sshcreatekey.islocalpublicrsakeypresent()
-                if present == false {
-                    // If new keypath is set create it
-                    let sshrootpath = await sshcreatekey.testcreatesshkeyrootpath()
-                    // Create keys
-                    let arguments = await sshcreatekey.argumentscreatekey()
-                    let command = "/usr/bin/ssh-keygen"
-                    print(sshrootpath ?? "")
-                    print(command)
-                    print(arguments?.joined(separator: " ") ?? "")
-                }
-            } catch let e {
-                let error = e
-                print(error)
-            }
-        }
+    
+        let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
+                                              sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
+        // If new keypath is set create it
+        let sshrootpath = await sshcreatekey.testcreatesshkeyrootpath()
+        // Create keys
+        let arguments = await sshcreatekey.argumentscreatekey()
+        print(sshrootpath ?? "")
+        print(arguments ?? "")
     }
-    
-    
+
     @Test func createkeysdefault() async {
-        let loadtestdata = ReadTestdataFromGitHub()
-        await loadtestdata.getdata()
-        testconfigurations = loadtestdata.testconfigurations
-        if let testconfigurations {
-            
-            do {
-                
-                let port = -1
-                let identityfile: String? = nil
-                
-                let sshcreatekey =  await SSHCreateKey(sharedsshport: String(port),
-                                                      sharedsshkeypathandidentityfile: identityfile)
-                let present = try  await sshcreatekey.islocalpublicrsakeypresent()
-                if present == false {
-                    // If new keypath is set create it
-                    let sshrootpath =  await sshcreatekey.testcreatesshkeyrootpath()
-                    // Create keys
-                    let arguments =  await sshcreatekey.argumentscreatekey()
-                    let command = "/usr/bin/ssh-keygen"
-                    print(sshrootpath ?? "")
-                    print(command)
-                    print(arguments?.joined(separator: " ") ?? "")
-                }
-            } catch let e {
-                let error = e
-                print(error)
-            }
-        }
+    
+        let port = -1
+        let identityfile: String? = nil
+
+        let sshcreatekey = await SSHCreateKey(sharedsshport: String(port),
+                                              sharedsshkeypathandidentityfile: identityfile)
+
+        let sshrootpath = await sshcreatekey.testcreatesshkeyrootpath()
+        // Create keys
+        let arguments = await sshcreatekey.argumentscreatekey()
+        print(sshrootpath ?? "")
+        print(arguments ?? "")
+
     }
 }
-
-
