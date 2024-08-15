@@ -86,7 +86,7 @@ public final class SSHCreateKey {
                 var sshkeypathandidentityfilesplit = sharedsshkeypathandidentityfile.split(separator: "/")
                 guard sshkeypathandidentityfilesplit.count > 2 else {
                     // If anything goes wrong set to default global values
-                    return NSHomeDirectory()
+                    return userHomeDirectoryPath
                 }
                 sshkeypathandidentityfilesplit.remove(at: sshkeypathandidentityfilesplit.count - 1)
                 return userHomeDirectoryPath +
