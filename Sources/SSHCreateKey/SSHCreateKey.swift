@@ -202,7 +202,16 @@ public final class SSHCreateKey {
         if let sharedsshkeypathandidentityfile,
            sharedsshkeypathandidentityfile.isEmpty == false
         {
-            args.append(sharedsshkeypathandidentityfile)
+            if sharedsshkeypathandidentityfile.first == "~" {
+                //replace the tilde with full Homecatalog
+                if let userHomeDirectoryPath {
+                    let tempsharedsshkeypathandidentityfile = sharedsshkeypathandidentityfile.replacingOccurrences(of: "~", with: userHomeDirectoryPath)
+                    args.append(tempsharedsshkeypathandidentityfile)
+                }
+            } else {
+                args.append(sharedsshkeypathandidentityfile)
+            }
+            
         } else {
             if let keypathonly, let identityfile {
                 args.append(keypathonly + "/" + identityfile)
