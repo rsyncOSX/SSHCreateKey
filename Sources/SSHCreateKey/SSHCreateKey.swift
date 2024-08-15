@@ -204,6 +204,7 @@ public final class SSHCreateKey {
         {
             if sharedsshkeypathandidentityfile.first == "~" {
                 //replace the tilde with full Homecatalog
+                // The Process object does not expand the tilde character when using ssh-keygen
                 if let userHomeDirectoryPath {
                     let tempsharedsshkeypathandidentityfile = sharedsshkeypathandidentityfile.replacingOccurrences(of: "~", with: userHomeDirectoryPath)
                     args.append(tempsharedsshkeypathandidentityfile)
