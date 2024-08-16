@@ -2,7 +2,7 @@
 
 This package is under development. 
 
-This package is code for assisting users to create SSH identityfile and key in RsyncUI. The package is used in [RsyncUI version 2.1.0](https://github.com/rsyncOSX/RsyncUI_ver_2.1.0). To be released as part of RsyncUI later in 2024.
+This package is code for assisting users to create SSH identityfile and key in RsyncUI. The package is used in [Version 2.1.0 and later](https://github.com/rsyncOSX/RsyncUI). To be released as part of RsyncUI in September or October 2024.
 
 By Using Swift Package Manager (SPM), parts of the source code in RsyncUI is extraced and created as packages. The old code, the base for packages, is deleted and RsyncUI imports the new packages. 
 
