@@ -1,5 +1,6 @@
 @testable import SSHCreateKey
 import Testing
+import Foundation
 
 @Suite final class TestCreateSSHkeys {
     var testconfigurations: [TestSynchronizeConfiguration]?
@@ -28,7 +29,7 @@ import Testing
         await loadtestdata.getdata()
         testconfigurations = loadtestdata.testconfigurations
 
-        // Sett Shareddata to nil oe default values
+        // Sett Shareddata to nil or default values
         let port = -1
         let identityfile: String? = nil
         let sshcreatekey = await SSHCreateKey(sharedsshport: String(port),
@@ -53,10 +54,10 @@ import Testing
                                               sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
         // If new keypath is set create it
         let sshrootpath = await sshcreatekey.testcreatesshkeyrootpath()
+        #expect(ArgumentsCreatSSHKeys().URLfileglobal == sshrootpath)
         // Create keys
         let arguments = await sshcreatekey.argumentscreatekey()
-        print(sshrootpath ?? "")
-        print(arguments ?? "")
+        #expect(ArgumentsCreatSSHKeys().sshcreateglobal == arguments)
     }
 
     @Test func createkeysdefault() async {
@@ -68,10 +69,8 @@ import Testing
                                               sharedsshkeypathandidentityfile: identityfile)
 
         let sshrootpath = await sshcreatekey.testcreatesshkeyrootpath()
-        // Create keys
+        #expect(ArgumentsCreatSSHKeys().URLfilelocal == sshrootpath)
         let arguments = await sshcreatekey.argumentscreatekey()
-        print(sshrootpath ?? "")
-        print(arguments ?? "")
-
+        #expect(ArgumentsCreatSSHKeys().sshcreatelocal == arguments)
     }
 }

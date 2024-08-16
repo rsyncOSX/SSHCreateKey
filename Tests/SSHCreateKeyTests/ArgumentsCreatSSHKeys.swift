@@ -19,25 +19,13 @@ struct ArgumentsCreatSSHKeys {
     let userHomeDirectoryPathdefault = "/Users/thomas"
     let sshkeypathandidentityfiledefault = "/Users/thomas/.ssh/id_rsa"
     let argumentssshcopyiddefault = "/usr/bin/ssh-copy-id -i /Users/thomas/.ssh/id_rsa thomas@raspberrypi"
+    
+    
+    let URLfilelocal: URL? = URL(fileURLWithPath: "/Users/thomas/.ssh/")
+    let sshcreatelocal = ["-t", "rsa", "-N", "", "-f", "/Users/thomas/.ssh/id_rsa"]
+    
+    
+    let URLfileglobal = URL(fileURLWithPath:"/Users/thomas/.ssh_global")
+    let sshcreateglobal = ["-t", "rsa", "-N", "", "-f", "/Users/thomas/.ssh_global/global"]
 
-    /*
-     /Users/thomas/.ssh
-     id_rsa
-     /Users/thomas
-     /Users/thomas/.ssh/id_rsa
-     /usr/bin/ssh-copy-id -i /Users/thomas/.ssh/id_rsa thomas@raspberrypi
-     */
-
-    /*
-     let arg3 = await sshcreatekey.keypathonly
-     print(arg3 ?? "")
-     let arg4 = await sshcreatekey.identityfile
-     print(arg4 ?? "")
-     let arg5 = await sshcreatekey.userHomeDirectoryPath
-     print(arg5 ?? "")
-     let arg6 = await sshcreatekey.sshkeypathandidentityfile
-     print(arg6 ?? "")
-     let arg7 = await sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
-     pri
-     */
 }
