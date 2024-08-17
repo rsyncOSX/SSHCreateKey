@@ -9,12 +9,15 @@ import Foundation
 
 final class ReadTestdataFromGitHub {
     var testconfigurations = [TestSynchronizeConfiguration]()
+    private var urlJSONuiconfig: String = "https://raw.githubusercontent.com/rsyncOSX/RsyncArguments/master/Testdata/rsyncuiconfig.json"
+    private var urlJSON: String = "https://raw.githubusercontent.com/rsyncOSX/RsyncArguments/master/Testdata/configurations.json"
 
     func getdata() async {
         let testdata = TestdataFromGitHub()
         // Load user configuration
         do {
-            if let userconfig = try await testdata.getrsyncuiconfigbyURL() {
+            if let userconfig = try await
+                testdata.loadanddecodestringdata(DecodeTestUserConfiguration.self, fromwhere: urlJSONuiconfig) {
                 await TestUserConfiguration(userconfig)
                 print("ReadTestdataFromGitHub: loading userconfiguration COMPLETED)")
             }
@@ -24,7 +27,7 @@ final class ReadTestdataFromGitHub {
         }
         // Load data
         do {
-            if let testdata = try await testdata.gettestdatabyURL() {
+            if let testdata = try await testdata.loadanddecodearraydata(DecodeTestdata.self, fromwhere: urlJSON) {
                 testconfigurations.removeAll()
                 for i in 0 ..< testdata.count {
                     var configuration = TestSynchronizeConfiguration(testdata[i])

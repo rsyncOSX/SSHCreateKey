@@ -11,23 +11,19 @@ struct TestdataFromGitHub {
     let urlSession = URLSession.shared
     let jsonDecoder = JSONDecoder()
 
-    private var urlJSON: String = "https://raw.githubusercontent.com/rsyncOSX/RsyncArguments/master/Testdata/configurations.json"
-
-    func gettestdatabyURL() async throws -> [DecodeTestdata]? {
-        if let url = URL(string: urlJSON) {
+    func loadanddecodestringdata<T: Codable>(_ t: T.Type, fromwhere: String) async throws -> T? {
+        if let url = URL(string: fromwhere) {
             let (data, _) = try await urlSession.gettestdata(for: url)
-            return try jsonDecoder.decode([DecodeTestdata].self, from: data)
+            return try jsonDecoder.decode(T.self, from: data)
         } else {
             return nil
         }
     }
-
-    private var urlJSONuiconfig: String = "https://raw.githubusercontent.com/rsyncOSX/RsyncArguments/master/Testdata/rsyncuiconfig.json"
-
-    func getrsyncuiconfigbyURL() async throws -> DecodeTestUserConfiguration? {
-        if let url = URL(string: urlJSONuiconfig) {
+    
+    func loadanddecodearraydata<T: Codable>(_ t: T.Type, fromwhere: String) async throws -> [T]? {
+        if let url = URL(string: fromwhere) {
             let (data, _) = try await urlSession.gettestdata(for: url)
-            return try jsonDecoder.decode(DecodeTestUserConfiguration.self, from: data)
+            return try jsonDecoder.decode([T].self, from: data)
         } else {
             return nil
         }
