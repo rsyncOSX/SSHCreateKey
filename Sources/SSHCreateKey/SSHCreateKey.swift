@@ -4,8 +4,6 @@ import Foundation
 
 @MainActor
 public final class SSHCreateKey {
-    // var offsiteServer = ""
-    // var offsiteUsername = ""
 
     var sharedsshport: String?
     var sharedsshkeypathandidentityfile: String?
