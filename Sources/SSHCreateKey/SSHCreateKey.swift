@@ -254,7 +254,7 @@ public final class SSHCreateKey {
     }
     
     // Verify SSH port is a valid INT
-    public func checksshport(_ port: String) throws -> Bool {
+    public func verifysshport(_ port: String) throws -> Bool {
         guard port.isEmpty == false else { return false }
         if Int(port) != nil {
             return true
