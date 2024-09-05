@@ -123,22 +123,13 @@ public final class SSHCreateKey {
 
             do {
                 try fm.createDirectory(at: sshkeypathlURL, withIntermediateDirectories: true, attributes: nil)
-            } catch let e {
+            } catch {
+                // catch let e
                 // _ = e
                 // propogateerror(error: error)
                 return
             }
         }
-    }
-
-    // Test create SSH catalog
-    // If ssh catalog exists - bail out, no need to create
-    public func testcreatesshkeyrootpath() -> URL? {
-        if let keypathonly {
-            let sshkeypathlURL = URL(fileURLWithPath: keypathonly)
-            return sshkeypathlURL
-        }
-        return nil
     }
 
     // Set parameters for ssh-copy-id for copy public ssh key to server
@@ -250,6 +241,27 @@ public final class SSHCreateKey {
         self.sharedsshport = sharedsshport
         self.sharedsshkeypathandidentityfile = sharedsshkeypathandidentityfile
     }
+    
+    // Verify SSH keypathidentityfile
+    public func verifysshkeypath(_ keypath: String) throws -> Bool {
+        if keypath.first != "~" { throw SshError.noslash }
+        let tempsshkeypath = keypath
+        let sshkeypathandidentityfilesplit = tempsshkeypath.split(separator: "/")
+        guard sshkeypathandidentityfilesplit.count > 2 else { throw SshError.noslash }
+        guard sshkeypathandidentityfilesplit[1].count > 1 else { throw SshError.notvalidpath }
+        guard sshkeypathandidentityfilesplit[2].count > 1 else { throw SshError.notvalidpath }
+        return true
+    }
+    
+    // Verify SSH port is a valid INT
+    public func checksshport(_ port: String) throws -> Bool {
+        guard port.isEmpty == false else { return false }
+        if Int(port) != nil {
+            return true
+        } else {
+            throw SSHportnumberError.notvalidInt
+        }
+    }
 }
 
 extension FileManager {
@@ -291,3 +303,18 @@ public enum SshError: LocalizedError {
         }
     }
 }
+
+public enum SSHportnumberError: LocalizedError {
+    case notvalidDouble
+    case notvalidInt
+
+    public var errorDescription: String? {
+        switch self {
+        case .notvalidDouble:
+            "Not a valid number (Double)"
+        case .notvalidInt:
+            "Not a valid number (Int)"
+        }
+    }
+}
+
