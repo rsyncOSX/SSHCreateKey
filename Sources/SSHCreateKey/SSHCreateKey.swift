@@ -7,6 +7,8 @@ public final class SSHCreateKey {
 
     var sharedsshport: String?
     var sharedsshkeypathandidentityfile: String?
+    
+    public var createkeycommand = "/usr/bin/ssh-keygen"
 
     public var rsaStringPath: String?
     // Arrays listing all key files
