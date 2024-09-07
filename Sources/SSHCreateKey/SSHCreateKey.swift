@@ -262,6 +262,15 @@ public final class SSHCreateKey {
             throw SSHportnumberError.notvalidInt
         }
     }
+    
+    // For test only
+    public func testcreatesshkeyrootpath() -> URL? {
+            if let keypathonly {
+                let sshkeypathlURL = URL(fileURLWithPath: keypathonly)
+                return sshkeypathlURL
+            }
+            return nil
+        }
 }
 
 extension FileManager {
