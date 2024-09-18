@@ -215,17 +215,10 @@ public final class SSHCreateKey {
     }
 
     public func validatepublickeypresent() -> Bool {
-        print(keypathonly)
-        print(keyFileStrings)
-        print(identityfile)
-        guard keyFileStrings != nil else { return false }
-        guard keyFileStrings?.filter({ $0.contains(identityfile ?? "") }).count ?? 0 > 0 else { return false }
-        guard keyFileStrings?.filter({ $0.contains((identityfile ?? "") + ".pub") }).count ?? 0 > 0 else {
-            return true
+        if let keyFileStrings, let identityfile {
+            return keyFileStrings.contains(identityfile + ".pub")
         }
-        rsaStringPath = keyFileStrings?.filter { $0.contains((identityfile ?? "") + ".pub") }[0]
-        guard rsaStringPath?.count ?? 0 > 0 else { return false }
-        return true
+        return false
     }
 
     public init(sharedsshport: String?,
