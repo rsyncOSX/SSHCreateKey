@@ -18,8 +18,6 @@ struct TestSynchronizeConfiguration: Identifiable, Codable {
     var parameter2: String
     var parameter3: String
     var parameter4: String
-    var parameter5: String
-    var parameter6: String
     var offsiteServer: String
     var backupID: String
     var dateRun: String?
@@ -60,8 +58,6 @@ struct TestSynchronizeConfiguration: Identifiable, Codable {
         parameter2 = data.parameter2 ?? ""
         parameter3 = data.parameter3 ?? ""
         parameter4 = data.parameter4 ?? ""
-        parameter5 = data.parameter5 ?? ""
-        parameter6 = data.parameter6 ?? ""
         parameter8 = data.parameter8
         parameter9 = data.parameter9
         rsyncdaemon = data.rsyncdaemon
@@ -91,8 +87,6 @@ extension TestSynchronizeConfiguration: Hashable, Equatable {
             lhs.parameter2 == rhs.parameter2 &&
             lhs.parameter3 == rhs.parameter3 &&
             lhs.parameter4 == rhs.parameter4 &&
-            lhs.parameter5 == rhs.parameter5 &&
-            lhs.parameter6 == rhs.parameter6 &&
             lhs.parameter8 == rhs.parameter8 &&
             lhs.parameter9 == rhs.parameter9 &&
             lhs.parameter10 == rhs.parameter10 &&
@@ -100,7 +94,8 @@ extension TestSynchronizeConfiguration: Hashable, Equatable {
             lhs.parameter12 == rhs.parameter12 &&
             lhs.parameter13 == rhs.parameter13 &&
             lhs.parameter14 == rhs.parameter14 &&
-            lhs.dateRun == rhs.dateRun
+            lhs.dateRun == rhs.dateRun &&
+            lhs.backupID == rhs.backupID
     }
 
     func hash(into hasher: inout Hasher) {
@@ -113,8 +108,6 @@ extension TestSynchronizeConfiguration: Hashable, Equatable {
         hasher.combine(parameter2)
         hasher.combine(parameter3)
         hasher.combine(parameter4)
-        hasher.combine(parameter5)
-        hasher.combine(parameter6)
         hasher.combine(parameter8)
         hasher.combine(parameter9)
         hasher.combine(parameter10)
@@ -123,6 +116,7 @@ extension TestSynchronizeConfiguration: Hashable, Equatable {
         hasher.combine(parameter13)
         hasher.combine(parameter14)
         hasher.combine(dateRun)
+        hasher.combine(backupID)
     }
 }
 

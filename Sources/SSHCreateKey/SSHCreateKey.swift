@@ -9,8 +9,8 @@ public final class SSHCreateKey {
     var sharedsshkeypathandidentityfile: String?
     
     public var createkeycommand = "/usr/bin/ssh-keygen"
-
     public var rsaStringPath: String?
+    
     // Arrays listing all key files
     public var keyFileStrings: [String]? {
         let fm = FileManager.default
@@ -47,9 +47,10 @@ public final class SSHCreateKey {
                 // If anything goes wrong set to default global values
                 return userHomeDirectoryPath + "/.ssh" + "/" + (identityfile ?? "")
             }
-        } else {
-            return (userHomeDirectoryPath ?? "") + "/.ssh" + "/" + (identityfile ?? "")
+        } else if let userHomeDirectoryPath {
+            return userHomeDirectoryPath  + "/.ssh" + "/" + (identityfile ?? "")
         }
+        return nil
     }
 
     // SSH identityfile with full keypath if NOT default is used
@@ -96,9 +97,10 @@ public final class SSHCreateKey {
                 // If anything goes wrong set to default global values
                 return userHomeDirectoryPath + "/.ssh"
             }
-        } else {
-            return (userHomeDirectoryPath ?? "") + "/.ssh"
+        } else if let userHomeDirectoryPath {
+            return userHomeDirectoryPath + "/.ssh"
         }
+        return nil
     }
 
     public var userHomeDirectoryPath: String? {
