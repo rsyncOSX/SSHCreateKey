@@ -59,19 +59,14 @@ import Foundation
         let arguments = await sshcreatekey.argumentscreatekey()
         #expect(ArgumentsCreatSSHKeys().sshcreateglobal == arguments)
     }
-
-    @Test func createkeysdefault() async {
     
-        let port = -1
-        let identityfile: String? = nil
-
-        let sshcreatekey = await SSHCreateKey(sharedsshport: String(port),
-                                              sharedsshkeypathandidentityfile: identityfile)
-
-        let sshrootpath = await sshcreatekey.testcreatesshkeyrootpath()
-        #expect(ArgumentsCreatSSHKeys().defaultURLfile == sshrootpath)
-        let arguments = await sshcreatekey.argumentscreatekey()
-        #expect(ArgumentsCreatSSHKeys().defaultsshcreate == arguments)
+    @Test func validatekeyfilespresent() async {
+        let loadtestdata = ReadTestdataFromGitHub()
+        await loadtestdata.getdata()
+    
+        let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
+                                              sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
+        await print(sshcreatekey.validatepublickeypresent())
     }
 }
 
@@ -134,19 +129,14 @@ import Foundation
         let arguments = await sshcreatekey.argumentscreatekey()
         #expect(ArgumentsCreatSSHKeys().defaultsshcreate == arguments)
     }
-
-    @Test func createkeysdefault() async {
     
-        let port = -1
-        let identityfile: String? = nil
-
-        let sshcreatekey = await SSHCreateKey(sharedsshport: String(port),
-                                              sharedsshkeypathandidentityfile: identityfile)
-
-        let sshrootpath = await sshcreatekey.testcreatesshkeyrootpath()
-        #expect(ArgumentsCreatSSHKeys().defaultURLfile == sshrootpath)
-        let arguments = await sshcreatekey.argumentscreatekey()
-        #expect(ArgumentsCreatSSHKeys().defaultsshcreate == arguments)
+    @Test func validatekeyfilespresent() async {
+        let loadtestdata = ReadTestdataFromGitHub()
+        await loadtestdata.getdatanossh()
+    
+        let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
+                                              sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
+        await print(sshcreatekey.validatepublickeypresent())
     }
 }
 

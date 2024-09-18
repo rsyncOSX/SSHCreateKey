@@ -214,19 +214,10 @@ public final class SSHCreateKey {
         return args
     }
 
-    // Check if rsa pub key exists
-    public func islocalpublicrsakeypresent() throws -> Bool {
-        guard keyFileStrings != nil else { return false }
-        guard keyFileStrings?.filter({ $0.contains(identityfile ?? "") }).count ?? 0 > 0 else { return false }
-        guard keyFileStrings?.filter({ $0.contains((identityfile ?? "") + ".pub") }).count ?? 0 > 0 else {
-            throw SshError.sshkeys
-        }
-        rsaStringPath = keyFileStrings?.filter { $0.contains((identityfile ?? "") + ".pub") }[0]
-        guard rsaStringPath?.count ?? 0 > 0 else { return false }
-        throw SshError.sshkeys
-    }
-
     public func validatepublickeypresent() -> Bool {
+        print(keypathonly)
+        print(keyFileStrings)
+        print(identityfile)
         guard keyFileStrings != nil else { return false }
         guard keyFileStrings?.filter({ $0.contains(identityfile ?? "") }).count ?? 0 > 0 else { return false }
         guard keyFileStrings?.filter({ $0.contains((identityfile ?? "") + ".pub") }).count ?? 0 > 0 else {
