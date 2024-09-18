@@ -165,21 +165,17 @@ public final class SSHCreateKey {
         var args = [String]()
         let command = "/usr/bin/ssh"
         args.append(command)
-        args.append("-p")
+        
         if let sharedsshport, sharedsshport != "-1" {
+            args.append("-p")
             args.append(sharedsshport)
-        } else  {
-            args.append("22")
         }
-        args.append("-i")
         if let sharedsshkeypathandidentityfile,
            sharedsshkeypathandidentityfile.isEmpty == false
         {
+            args.append("-i")
             args.append(sharedsshkeypathandidentityfile)
-        } else {
-            args.append("./ssh/id_rsa")
         }
-
         args.append(offsiteUsername + "@" + offsiteServer)
         return args.joined(separator: " ")
     }
