@@ -216,7 +216,8 @@ public final class SSHCreateKey {
 
     public func validatepublickeypresent() -> Bool {
         if let keyFileStrings, let identityfile {
-            return keyFileStrings.contains(identityfile + ".pub")
+            // return keyFileStrings.contains(identityfile + ".pub")
+            return keyFileStrings.contains(identityfile)
         }
         return false
     }
