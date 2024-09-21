@@ -31,7 +31,8 @@ public final class SSHCreateKey {
     // Path to ssh keypath including identityfile
     public var sshkeypathandidentityfile: String? {
         if let sharedsshkeypathandidentityfile,
-           let userHomeDirectoryPath
+           let userHomeDirectoryPath,
+            let identityfile
         {
             if sharedsshkeypathandidentityfile.first == "~" {
                 // must drop identityfile and then set rootpath
@@ -39,16 +40,17 @@ public final class SSHCreateKey {
                 let sshkeypathandidentityfilesplit = sharedsshkeypathandidentityfile.split(separator: "/")
                 guard sshkeypathandidentityfilesplit.count > 2 else {
                     // If anything goes wrong set to default global values
-                    return userHomeDirectoryPath + "/.ssh/" + "/" + (identityfile ?? "")
+                    return userHomeDirectoryPath + "/.ssh/" + "/" + identityfile
                 }
                 return userHomeDirectoryPath + sshkeypathandidentityfilesplit.joined(separator: "/").dropFirst()
 
             } else {
                 // If anything goes wrong set to default global values
-                return userHomeDirectoryPath + "/.ssh" + "/" + (identityfile ?? "")
+                return userHomeDirectoryPath + "/.ssh" + "/" + identityfile
             }
-        } else if let userHomeDirectoryPath {
-            return userHomeDirectoryPath  + "/.ssh" + "/" + (identityfile ?? "")
+        } else if let userHomeDirectoryPath,
+                    let identityfile {
+            return userHomeDirectoryPath  + "/.ssh" + "/" + identityfile
         }
         return nil
     }
