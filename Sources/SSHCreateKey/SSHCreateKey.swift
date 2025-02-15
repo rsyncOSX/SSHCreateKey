@@ -11,10 +11,10 @@ public final class SSHCreateKey {
     public var createkeycommand = "/usr/bin/ssh-keygen"
     public var rsaStringPath: String?
     
-    // Arrays listing all key files
-    public var keyFileStrings: [String]? {
+    // Arrays all sshkey files
+    public var allsshkeyfiles: [String]? {
         let fm = FileManager.default
-        if let atpath = keypathonly {
+        if let atpath = sshkeypath {
             var array = [String]()
             do {
                 for files in try fm.contentsOfDirectory(atPath: atpath) {
@@ -31,8 +31,7 @@ public final class SSHCreateKey {
     // Path to ssh keypath including identityfile
     public var sshkeypathandidentityfile: String? {
         if let sharedsshkeypathandidentityfile,
-           let userHomeDirectoryPath,
-            let identityfile
+           let userHomeDirectoryPath
         {
             if sharedsshkeypathandidentityfile.first == "~" {
                 // must drop identityfile and then set rootpath
@@ -48,8 +47,7 @@ public final class SSHCreateKey {
                 // If anything goes wrong set to default global values
                 return userHomeDirectoryPath + "/.ssh" + "/" + identityfile
             }
-        } else if let userHomeDirectoryPath,
-                    let identityfile {
+        } else if let userHomeDirectoryPath {
             return userHomeDirectoryPath  + "/.ssh" + "/" + identityfile
         }
         return nil
@@ -57,7 +55,7 @@ public final class SSHCreateKey {
 
     // SSH identityfile with full keypath if NOT default is used
     // If default, only return defalt value
-    public var identityfile: String? {
+    public var identityfile: String {
         if let sharedsshkeypathandidentityfile {
             if sharedsshkeypathandidentityfile.first == "~" {
                 // must drop identityfile and then set rootpath
@@ -78,8 +76,12 @@ public final class SSHCreateKey {
     }
 
     // Used when creating ssh keypath
-    // keypathonly is full keypath only like /Users/thomas/.ssh_global
-    public var keypathonly: String? {
+    // default keypath - Users/thomas/ssh
+    // user set keypath - Users/thomas/.ssh_global
+    // If not created retunr nil
+    // NO trailing "/"
+    
+    public var sshkeypath: String? {
         if let sharedsshkeypathandidentityfile,
            let userHomeDirectoryPath
         {
@@ -119,11 +121,11 @@ public final class SSHCreateKey {
     // If ssh catalog exists - bail out, no need to create
     public func createsshkeyrootpath() {
         let fm = FileManager.default
-        if let keypathonly {
-            guard fm.keypathlocationExists(at: keypathonly, kind: .folder) == false else {
+        if let sshkeypath {
+            guard fm.keypathlocationExists(at: sshkeypath, kind: .folder) == false else {
                 return
             }
-            let sshkeypathlURL = URL(fileURLWithPath: keypathonly)
+            let sshkeypathlURL = URL(fileURLWithPath: sshkeypath)
 
             do {
                 try fm.createDirectory(at: sshkeypathlURL, withIntermediateDirectories: true, attributes: nil)
@@ -209,17 +211,17 @@ public final class SSHCreateKey {
             }
             
         } else {
-            if let keypathonly, let identityfile {
-                args.append(keypathonly + "/" + identityfile)
+            if let sshkeypath {
+                args.append(sshkeypath + "/" + identityfile)
             }
         }
         return args
     }
 
     public func validatepublickeypresent() -> Bool {
-        if let keyFileStrings, let identityfile {
+        if let allsshkeyfiles {
             let publickey = identityfile.appending(".pub")
-            return keyFileStrings.contains(publickey)
+            return allsshkeyfiles.contains(publickey)
         }
         return false
     }
@@ -254,8 +256,8 @@ public final class SSHCreateKey {
     
     // For test only
     public func testcreatesshkeyrootpath() -> URL? {
-            if let keypathonly {
-                let sshkeypathlURL = URL(fileURLWithPath: keypathonly)
+            if let sshkeypath {
+                let sshkeypathlURL = URL(fileURLWithPath: sshkeypath)
                 return sshkeypathlURL
             }
             return nil

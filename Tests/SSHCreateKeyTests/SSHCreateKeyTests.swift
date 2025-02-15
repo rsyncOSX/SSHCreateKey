@@ -12,7 +12,7 @@ import Foundation
 
         let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
                                               sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
-        let arg3 = await sshcreatekey.keypathonly
+        let arg3 = await sshcreatekey.sshkeypath
         #expect(ArgumentsCreatSSHKeys().keypathglobal == arg3)
         let arg4 = await sshcreatekey.identityfile
         #expect(ArgumentsCreatSSHKeys().identityfileglobl == arg4)
@@ -34,7 +34,7 @@ import Foundation
         let identityfile: String? = nil
         let sshcreatekey = await SSHCreateKey(sharedsshport: String(port),
                                               sharedsshkeypathandidentityfile: identityfile)
-        let arg3 = await sshcreatekey.keypathonly
+        let arg3 = await sshcreatekey.sshkeypath
         #expect(ArgumentsCreatSSHKeys().keypathdefault == arg3)
         let arg4 = await sshcreatekey.identityfile
         #expect(ArgumentsCreatSSHKeys().identityfiledefault == arg4)
@@ -81,7 +81,7 @@ import Foundation
 
         let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
                                               sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
-        let arg3 = await sshcreatekey.keypathonly
+        let arg3 = await sshcreatekey.sshkeypath
         #expect(ArgumentsCreatSSHKeys().defaultkeypath == arg3)
         let arg4 = await sshcreatekey.identityfile
         #expect(ArgumentsCreatSSHKeys().defaultidentityfileglobl == arg4)
@@ -104,7 +104,7 @@ import Foundation
         let identityfile: String? = nil
         let sshcreatekey = await SSHCreateKey(sharedsshport: String(port),
                                               sharedsshkeypathandidentityfile: identityfile)
-        let arg3 = await sshcreatekey.keypathonly
+        let arg3 = await sshcreatekey.sshkeypath
         #expect(ArgumentsCreatSSHKeys().keypathdefault == arg3)
         let arg4 = await sshcreatekey.identityfile
         #expect(ArgumentsCreatSSHKeys().identityfiledefault == arg4)
