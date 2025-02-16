@@ -39,23 +39,23 @@ public final class SSHCreateKey {
                 let sshkeypathandidentityfilesplit = sharedsshkeypathandidentityfile.split(separator: "/")
                 guard sshkeypathandidentityfilesplit.count > 2 else {
                     // If anything goes wrong set to default global values
-                    return userHomeDirectoryPath + "/.ssh/" + "/" + identityfile
+                    return userHomeDirectoryPath + "/.ssh/" + "/" + identityfileonly
                 }
                 return userHomeDirectoryPath + sshkeypathandidentityfilesplit.joined(separator: "/").dropFirst()
 
             } else {
                 // If anything goes wrong set to default global values
-                return userHomeDirectoryPath + "/.ssh" + "/" + identityfile
+                return userHomeDirectoryPath + "/.ssh" + "/" + identityfileonly
             }
         } else if let userHomeDirectoryPath {
-            return userHomeDirectoryPath  + "/.ssh" + "/" + identityfile
+            return userHomeDirectoryPath  + "/.ssh" + "/" + identityfileonly
         }
         return nil
     }
 
     // SSH identityfile with full keypath if NOT default is used
     // If default, only return defalt value
-    public var identityfile: String {
+    public var identityfileonly: String {
         if let sharedsshkeypathandidentityfile {
             if sharedsshkeypathandidentityfile.first == "~" {
                 // must drop identityfile and then set rootpath
@@ -78,7 +78,7 @@ public final class SSHCreateKey {
     // Used when creating ssh keypath
     // default keypath - Users/thomas/ssh
     // user set keypath - Users/thomas/.ssh_global
-    // If not created retunr nil
+    // If not created return nil
     // NO trailing "/"
     
     public var sshkeypath: String? {
@@ -212,7 +212,7 @@ public final class SSHCreateKey {
             
         } else {
             if let sshkeypath {
-                args.append(sshkeypath + "/" + identityfile)
+                args.append(sshkeypath + "/" + identityfileonly)
             }
         }
         return args
@@ -220,7 +220,7 @@ public final class SSHCreateKey {
 
     public func validatepublickeypresent() -> Bool {
         if let allsshkeyfiles {
-            let publickey = identityfile.appending(".pub")
+            let publickey = identityfileonly.appending(".pub")
             return allsshkeyfiles.contains(publickey)
         }
         return false
