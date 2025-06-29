@@ -14,7 +14,7 @@ import Foundation
                                               sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
         let arg3 = await sshcreatekey.sshkeypath
         #expect(ArgumentsCreatSSHKeys().keypathglobal == arg3)
-        let arg4 = await sshcreatekey.identityfile
+        let arg4 = await sshcreatekey.identityfileonly
         #expect(ArgumentsCreatSSHKeys().identityfileglobl == arg4)
         let arg5 = await sshcreatekey.userHomeDirectoryPath
         #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathglobal == arg5)
@@ -36,7 +36,7 @@ import Foundation
                                               sharedsshkeypathandidentityfile: identityfile)
         let arg3 = await sshcreatekey.sshkeypath
         #expect(ArgumentsCreatSSHKeys().keypathdefault == arg3)
-        let arg4 = await sshcreatekey.identityfile
+        let arg4 = await sshcreatekey.identityfileonly
         #expect(ArgumentsCreatSSHKeys().identityfiledefault == arg4)
         let arg5 = await sshcreatekey.userHomeDirectoryPath
         #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathdefault == arg5)
@@ -83,7 +83,7 @@ import Foundation
                                               sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
         let arg3 = await sshcreatekey.sshkeypath
         #expect(ArgumentsCreatSSHKeys().defaultkeypath == arg3)
-        let arg4 = await sshcreatekey.identityfile
+        let arg4 = await sshcreatekey.identityfileonly
         #expect(ArgumentsCreatSSHKeys().defaultidentityfileglobl == arg4)
         let arg5 = await sshcreatekey.userHomeDirectoryPath
         #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathglobal == arg5)
@@ -106,7 +106,7 @@ import Foundation
                                               sharedsshkeypathandidentityfile: identityfile)
         let arg3 = await sshcreatekey.sshkeypath
         #expect(ArgumentsCreatSSHKeys().keypathdefault == arg3)
-        let arg4 = await sshcreatekey.identityfile
+        let arg4 = await sshcreatekey.sharedsshkeypathandidentityfile
         #expect(ArgumentsCreatSSHKeys().identityfiledefault == arg4)
         let arg5 = await sshcreatekey.userHomeDirectoryPath
         #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathdefault == arg5)

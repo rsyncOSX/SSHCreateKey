@@ -238,7 +238,7 @@ public final class SSHCreateKey {
         if keypath.first != "~" { throw SshError.noslash }
         let tempsshkeypath = keypath
         let sshkeypathandidentityfilesplit = tempsshkeypath.split(separator: "/")
-        guard sshkeypathandidentityfilesplit.count > 2 else { throw SshError.noslash }
+        guard sshkeypathandidentityfilesplit.count == 2 else { throw SshError.noslash }
         guard sshkeypathandidentityfilesplit[1].count > 1 else { throw SshError.notvalidpath }
         guard sshkeypathandidentityfilesplit[2].count > 1 else { throw SshError.notvalidpath }
         return true
