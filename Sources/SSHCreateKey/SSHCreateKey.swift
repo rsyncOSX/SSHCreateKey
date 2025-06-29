@@ -232,7 +232,7 @@ public final class SSHCreateKey {
         self.sharedsshport = sharedsshport
         self.sharedsshkeypathandidentityfile = sharedsshkeypathandidentityfile
     }
-    
+/*
     // Verify SSH keypathidentityfile
     public func verifysshkeypath(_ keypath: String) throws -> Bool {
         if keypath.first != "~" { throw SshError.noslash }
@@ -253,7 +253,7 @@ public final class SSHCreateKey {
             throw SSHportnumberError.notvalidInt
         }
     }
-    
+ */
     // For test only
     public func testcreatesshkeyrootpath() -> URL? {
             if let sshkeypath {
@@ -287,6 +287,7 @@ public enum LocationKind {
     case folder
 }
 
+/*
 public enum SshError: LocalizedError {
     case notvalidpath
     case sshkeys
@@ -317,4 +318,4 @@ public enum SSHportnumberError: LocalizedError {
         }
     }
 }
-
+*/
