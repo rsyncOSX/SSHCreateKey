@@ -2,7 +2,6 @@
 // https://docs.swift.org/swift-book
 import Foundation
 
-@MainActor
 public final class SSHCreateKey {
 
     var sharedsshport: String?
@@ -232,28 +231,7 @@ public final class SSHCreateKey {
         self.sharedsshport = sharedsshport
         self.sharedsshkeypathandidentityfile = sharedsshkeypathandidentityfile
     }
-/*
-    // Verify SSH keypathidentityfile
-    public func verifysshkeypath(_ keypath: String) throws -> Bool {
-        if keypath.first != "~" { throw SshError.noslash }
-        let tempsshkeypath = keypath
-        let sshkeypathandidentityfilesplit = tempsshkeypath.split(separator: "/")
-        guard sshkeypathandidentityfilesplit.count == 3 else { throw SshError.noslash }
-        guard sshkeypathandidentityfilesplit[1].count > 1 else { throw SshError.notvalidpath }
-        guard sshkeypathandidentityfilesplit[2].count > 1 else { throw SshError.notvalidpath }
-        return true
-    }
-    
-    // Verify SSH port is a valid INT
-    public func verifysshport(_ port: String) throws -> Bool {
-        guard port.isEmpty == false else { return false }
-        if Int(port) != nil {
-            return true
-        } else {
-            throw SSHportnumberError.notvalidInt
-        }
-    }
- */
+
     // For test only
     public func testcreatesshkeyrootpath() -> URL? {
             if let sshkeypath {
@@ -287,35 +265,3 @@ public enum LocationKind {
     case folder
 }
 
-/*
-public enum SshError: LocalizedError {
-    case notvalidpath
-    case sshkeys
-    case noslash
-
-    public var errorDescription: String? {
-        switch self {
-        case .notvalidpath:
-            "SSH keypath is not valid"
-        case .sshkeys:
-            "SSH RSA keys exist, cannot create"
-        case .noslash:
-            "SSH keypath must be like ~/.ssh_keypath/identityfile"
-        }
-    }
-}
-
-public enum SSHportnumberError: LocalizedError {
-    case notvalidDouble
-    case notvalidInt
-
-    public var errorDescription: String? {
-        switch self {
-        case .notvalidDouble:
-            "Not a valid number (Double)"
-        case .notvalidInt:
-            "Not a valid number (Int)"
-        }
-    }
-}
-*/

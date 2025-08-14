@@ -12,15 +12,15 @@ import Foundation
 
         let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
                                               sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
-        let arg3 = await sshcreatekey.sshkeypath
+        let arg3 =  sshcreatekey.sshkeypath
         #expect(ArgumentsCreatSSHKeys().keypathglobal == arg3)
-        let arg4 = await sshcreatekey.identityfileonly
+        let arg4 =  sshcreatekey.identityfileonly
         #expect(ArgumentsCreatSSHKeys().identityfileglobl == arg4)
-        let arg5 = await sshcreatekey.userHomeDirectoryPath
+        let arg5 =  sshcreatekey.userHomeDirectoryPath
         #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathglobal == arg5)
-        let arg6 = await sshcreatekey.sshkeypathandidentityfile
+        let arg6 =  sshcreatekey.sshkeypathandidentityfile
         #expect(ArgumentsCreatSSHKeys().sshkeypathandidentityfileglobal == arg6)
-        let arg7 = await sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
+        let arg7 =  sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
         #expect(ArgumentsCreatSSHKeys().argumentssshcopyidglobal == arg7)
     }
 
@@ -32,17 +32,17 @@ import Foundation
         // Sett Shareddata to nil or default values
         let port = -1
         let identityfile: String? = nil
-        let sshcreatekey = await SSHCreateKey(sharedsshport: String(port),
+        let sshcreatekey =  SSHCreateKey(sharedsshport: String(port),
                                               sharedsshkeypathandidentityfile: identityfile)
-        let arg3 = await sshcreatekey.sshkeypath
+        let arg3 =  sshcreatekey.sshkeypath
         #expect(ArgumentsCreatSSHKeys().keypathdefault == arg3)
-        let arg4 = await sshcreatekey.identityfileonly
+        let arg4 =  sshcreatekey.identityfileonly
         #expect(ArgumentsCreatSSHKeys().identityfiledefault == arg4)
-        let arg5 = await sshcreatekey.userHomeDirectoryPath
+        let arg5 =  sshcreatekey.userHomeDirectoryPath
         #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathdefault == arg5)
-        let arg6 = await sshcreatekey.sshkeypathandidentityfile
+        let arg6 =  sshcreatekey.sshkeypathandidentityfile
         #expect(ArgumentsCreatSSHKeys().sshkeypathandidentityfiledefault == arg6)
-        let arg7 = await sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
+        let arg7 =  sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
         #expect(ArgumentsCreatSSHKeys().argumentssshcopyiddefault == arg7)
     }
 
@@ -53,10 +53,10 @@ import Foundation
         let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
                                               sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
         // If new keypath is set create it
-        let sshrootpath = await sshcreatekey.testcreatesshkeyrootpath()
+        let sshrootpath =  sshcreatekey.testcreatesshkeyrootpath()
         #expect(ArgumentsCreatSSHKeys().URLfileglobal == sshrootpath)
         // Create keys
-        let arguments = await sshcreatekey.argumentscreatekey()
+        let arguments =  sshcreatekey.argumentscreatekey()
         #expect(ArgumentsCreatSSHKeys().sshcreateglobal == arguments)
     }
     
@@ -66,7 +66,7 @@ import Foundation
     
         let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
                                               sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
-        await print(sshcreatekey.validatepublickeypresent())
+         print(sshcreatekey.validatepublickeypresent())
     }
 }
 
@@ -81,15 +81,15 @@ import Foundation
 
         let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
                                               sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
-        let arg3 = await sshcreatekey.sshkeypath
+        let arg3 =  sshcreatekey.sshkeypath
         #expect(ArgumentsCreatSSHKeys().defaultkeypath == arg3)
-        let arg4 = await sshcreatekey.identityfileonly
+        let arg4 =  sshcreatekey.identityfileonly
         #expect(ArgumentsCreatSSHKeys().defaultidentityfileglobl == arg4)
-        let arg5 = await sshcreatekey.userHomeDirectoryPath
+        let arg5 =  sshcreatekey.userHomeDirectoryPath
         #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathglobal == arg5)
-        let arg6 = await sshcreatekey.sshkeypathandidentityfile
+        let arg6 =  sshcreatekey.sshkeypathandidentityfile
         #expect(ArgumentsCreatSSHKeys().defaultsshkeypathandidentityfile == arg6)
-        let arg7 = await sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
+        let arg7 =  sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
         #expect(ArgumentsCreatSSHKeys().argumentssshcopyiddefault == arg7)
     }
 
@@ -102,17 +102,17 @@ import Foundation
         // Sett Shareddata to nil or default values
         let port = -1
         let identityfile: String? = nil
-        let sshcreatekey = await SSHCreateKey(sharedsshport: String(port),
+        let sshcreatekey =  SSHCreateKey(sharedsshport: String(port),
                                               sharedsshkeypathandidentityfile: identityfile)
-        let arg3 = await sshcreatekey.sshkeypath
+        let arg3 =  sshcreatekey.sshkeypath
         #expect(ArgumentsCreatSSHKeys().keypathdefault == arg3)
-        let arg4 = await sshcreatekey.sharedsshkeypathandidentityfile
+        let arg4 =  sshcreatekey.sharedsshkeypathandidentityfile
         #expect(ArgumentsCreatSSHKeys().identityfiledefault == arg4)
-        let arg5 = await sshcreatekey.userHomeDirectoryPath
+        let arg5 =  sshcreatekey.userHomeDirectoryPath
         #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathdefault == arg5)
-        let arg6 = await sshcreatekey.sshkeypathandidentityfile
+        let arg6 =  sshcreatekey.sshkeypathandidentityfile
         #expect(ArgumentsCreatSSHKeys().sshkeypathandidentityfiledefault == arg6)
-        let arg7 = await sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
+        let arg7 =  sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
         #expect(ArgumentsCreatSSHKeys().argumentssshcopyiddefault == arg7)
     }
 
@@ -123,10 +123,10 @@ import Foundation
         let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
                                               sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
         // If new keypath is set create it
-        let sshrootpath = await sshcreatekey.testcreatesshkeyrootpath()
+        let sshrootpath =  sshcreatekey.testcreatesshkeyrootpath()
         #expect(ArgumentsCreatSSHKeys().defaultURLfile == sshrootpath)
         // Create keys
-        let arguments = await sshcreatekey.argumentscreatekey()
+        let arguments =  sshcreatekey.argumentscreatekey()
         #expect(ArgumentsCreatSSHKeys().defaultsshcreate == arguments)
     }
     
@@ -136,7 +136,7 @@ import Foundation
     
         let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
                                               sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
-        await print(sshcreatekey.validatepublickeypresent())
+        print(sshcreatekey.validatepublickeypresent())
     }
 }
 
