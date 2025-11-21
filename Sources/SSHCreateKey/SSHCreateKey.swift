@@ -2,254 +2,326 @@
 // https://docs.swift.org/swift-book
 import Foundation
 
+public enum SSHKeyError: LocalizedError {
+    case invalidPath
+    case invalidPort
+    case keyDirectoryCreationFailed
+    case homeDirectoryNotFound
+    case invalidServerAddress
+    case invalidUsername
+    
+    public var errorDescription: String? {
+        switch self {
+        case .invalidPath:
+            "Invalid SSH key path"
+        case .invalidPort:
+            "Invalid SSH port number"
+        case .keyDirectoryCreationFailed:
+            "Failed to create SSH key directory"
+        case .homeDirectoryNotFound:
+            "Could not determine user home directory"
+        case .invalidServerAddress:
+            "Invalid server address"
+        case .invalidUsername:
+            "Invalid username"
+        }
+    }
+}
+
 public final class SSHCreateKey {
-
-    var sharedsshport: String?
-    var sharedsshkeypathandidentityfile: String?
     
-    public var createkeycommand = "/usr/bin/ssh-keygen"
-    public var rsaStringPath: String?
+    // MARK: - Constants
     
-    // Arrays all sshkey files
-    public var allsshkeyfiles: [String]? {
-        let fm = FileManager.default
-        if let atpath = sshkeypath {
-            var array = [String]()
-            do {
-                for files in try fm.contentsOfDirectory(atPath: atpath) {
-                    array.append(files)
-                }
-                return array
-            } catch {
-                return nil
-            }
-        }
-        return nil
+    private enum Constants {
+        static let defaultIdentityFile = "id_rsa"
+        static let defaultSSHDirectory = ".ssh"
+        static let sshKeygenCommand = "/usr/bin/ssh-keygen"
+        static let sshCopyIDCommand = "/usr/bin/ssh-copy-id"
+        static let sshCommand = "/usr/bin/ssh"
+        static let noPortValue = "-1"
     }
-
-    // Path to ssh keypath including identityfile
-    public var sshkeypathandidentityfile: String? {
-        if let sharedsshkeypathandidentityfile,
-           let userHomeDirectoryPath
-        {
-            if sharedsshkeypathandidentityfile.first == "~" {
-                // must drop identityfile and then set rootpath
-                // also drop the "~" character
-                let sshkeypathandidentityfilesplit = sharedsshkeypathandidentityfile.split(separator: "/")
-                guard sshkeypathandidentityfilesplit.count > 2 else {
-                    // If anything goes wrong set to default global values
-                    return userHomeDirectoryPath + "/.ssh/" + "/" + identityfileonly
-                }
-                return userHomeDirectoryPath + sshkeypathandidentityfilesplit.joined(separator: "/").dropFirst()
-
-            } else {
-                // If anything goes wrong set to default global values
-                return userHomeDirectoryPath + "/.ssh" + "/" + identityfileonly
-            }
-        } else if let userHomeDirectoryPath {
-            return userHomeDirectoryPath  + "/.ssh" + "/" + identityfileonly
-        }
-        return nil
-    }
-
-    // SSH identityfile with full keypath if NOT default is used
-    // If default, only return defalt value
-    public var identityfileonly: String {
-        if let sharedsshkeypathandidentityfile {
-            if sharedsshkeypathandidentityfile.first == "~" {
-                // must drop identityfile and then set rootpath
-                // also drop the "~" character
-                let sshkeypathandidentityfilesplit = sharedsshkeypathandidentityfile.split(separator: "/")
-                guard sshkeypathandidentityfilesplit.count > 2 else {
-                    // If anything goes wrong set to default global values
-                    return "id_rsa"
-                }
-                return String(sshkeypathandidentityfilesplit[sshkeypathandidentityfilesplit.count - 1])
-            } else {
-                // If anything goes wrong set to default global values
-                return "id_rsa"
-            }
-        } else {
-            return "id_rsa"
-        }
-    }
-
-    // Used when creating ssh keypath
-    // default keypath - Users/thomas/ssh
-    // user set keypath - Users/thomas/.ssh_global
-    // If not created return nil
-    // NO trailing "/"
     
-    public var sshkeypath: String? {
-        if let sharedsshkeypathandidentityfile,
-           let userHomeDirectoryPath
-        {
-            if sharedsshkeypathandidentityfile.first == "~" {
-                // must drop identityfile and then set rootpath
-                // also drop the "~" character
-                var sshkeypathandidentityfilesplit = sharedsshkeypathandidentityfile.split(separator: "/")
-                guard sshkeypathandidentityfilesplit.count > 2 else {
-                    // If anything goes wrong set to default global values
-                    return userHomeDirectoryPath
-                }
-                sshkeypathandidentityfilesplit.remove(at: sshkeypathandidentityfilesplit.count - 1)
-                return userHomeDirectoryPath +
-                    String(sshkeypathandidentityfilesplit.joined(separator: "/").dropFirst())
-
-            } else {
-                // If anything goes wrong set to default global values
-                return userHomeDirectoryPath + "/.ssh"
-            }
-        } else if let userHomeDirectoryPath {
-            return userHomeDirectoryPath + "/.ssh"
+    // MARK: - Properties
+    
+    var sharedSSHPort: String?
+    var sharedSSHKeyPathAndIdentityFile: String?
+    
+    public var createKeyCommand = Constants.sshKeygenCommand
+    
+    /// Lists all SSH key files in the SSH key directory
+    public var allSSHKeyFiles: [String]? {
+        let fileManager = FileManager.default
+        guard let path = sshKeyPath else { return nil }
+        
+        do {
+            return try fileManager.contentsOfDirectory(atPath: path)
+        } catch {
+            return nil
         }
-        return nil
     }
-
+    
+    /// Full path to SSH key including the identity file
+    /// Example: /Users/username/.ssh/id_rsa
+    public var sshKeyPathAndIdentityFile: String? {
+        guard let userHome = userHomeDirectoryPath else { return nil }
+        
+        if let sharedPath = sharedSSHKeyPathAndIdentityFile, !sharedPath.isEmpty {
+            return parseSSHKeyPath(sharedPath, userHome: userHome, includeIdentityFile: true)
+        }
+        
+        return userHome + "/" + Constants.defaultSSHDirectory + "/" + Constants.defaultIdentityFile
+    }
+    
+    /// Returns only the identity file name (e.g., "id_rsa" or custom name)
+    public var identityFileOnly: String {
+        guard let sharedPath = sharedSSHKeyPathAndIdentityFile,
+              !sharedPath.isEmpty,
+              sharedPath.first == "~" else {
+            return Constants.defaultIdentityFile
+        }
+        
+        let components = sharedPath.split(separator: "/")
+        guard components.count > 2, let lastComponent = components.last else {
+            return Constants.defaultIdentityFile
+        }
+        
+        return String(lastComponent)
+    }
+    
+    /// Path to SSH key directory (without identity file)
+    /// Example: /Users/username/.ssh
+    public var sshKeyPath: String? {
+        guard let userHome = userHomeDirectoryPath else { return nil }
+        
+        if let sharedPath = sharedSSHKeyPathAndIdentityFile, !sharedPath.isEmpty {
+            return parseSSHKeyPath(sharedPath, userHome: userHome, includeIdentityFile: false)
+        }
+        
+        return userHome + "/" + Constants.defaultSSHDirectory
+    }
+    
+    /// User's home directory path
     public var userHomeDirectoryPath: String? {
         let pw = getpwuid(getuid())
         if let home = pw?.pointee.pw_dir {
-            let homePath = FileManager.default.string(withFileSystemRepresentation: home, length: Int(strlen(home)))
+            let homePath = FileManager.default.string(
+                withFileSystemRepresentation: home,
+                length: Int(strlen(home))
+            )
             return homePath
-        } else {
-            return nil
         }
+        return nil
     }
-
-    // Create SSH catalog
-    // If ssh catalog exists - bail out, no need to create
-    public func createsshkeyrootpath() {
-        let fm = FileManager.default
-        if let sshkeypath {
-            guard fm.keypathlocationExists(at: sshkeypath, kind: .folder) == false else {
-                return
-            }
-            let sshkeypathlURL = URL(fileURLWithPath: sshkeypath)
-
-            do {
-                try fm.createDirectory(at: sshkeypathlURL, withIntermediateDirectories: true, attributes: nil)
-            } catch {
-                // catch let e
-                // _ = e
-                // propogateerror(error: error)
-                return
-            }
+    
+    // MARK: - Initialization
+    
+    public init(sharedSSHPort: String?,
+                sharedSSHKeyPathAndIdentityFile: String?) {
+        self.sharedSSHPort = sharedSSHPort
+        self.sharedSSHKeyPathAndIdentityFile = sharedSSHKeyPathAndIdentityFile
+    }
+    
+    // MARK: - Public Methods
+    
+    /// Creates the SSH key root directory if it doesn't exist
+    /// - Throws: SSHKeyError if directory creation fails
+    public func createSSHKeyRootPath() throws {
+        let fileManager = FileManager.default
+        guard let keyPath = sshKeyPath else {
+            throw SSHKeyError.invalidPath
         }
-    }
-
-    // Set parameters for ssh-copy-id for copy public ssh key to server
-    // ssh-address = "backup@server.com"
-    // ssh-copy-id -i $ssh-keypath -p port $ssh-address
-    public func argumentssshcopyid(offsiteServer: String,
-                                   offsiteUsername: String) -> String
-    {
-        var args = [String]()
-        let command = "/usr/bin/ssh-copy-id"
-        args.append(command)
-        args.append("-i")
-        if let sharedsshkeypathandidentityfile,
-           let sharedsshport,
-           sharedsshkeypathandidentityfile.isEmpty == false,
-           sharedsshport != "-1"
-        {
-            args.append(sharedsshkeypathandidentityfile)
-            args.append("-p")
-            args.append(sharedsshport)
-        } else {
-            args.append(sshkeypathandidentityfile ?? "")
-        }
-        args.append(offsiteUsername + "@" + offsiteServer)
-        return args.joined(separator: " ")
-    }
-
-    // Check if pub key exists on remote server
-    // ssh -p port -i $ssh-keypath $ssh-address
-    public func argumentsverifyremotepublicsshkey(offsiteServer: String,
-                                           offsiteUsername: String) -> String
-    {
-        var args = [String]()
-        let command = "/usr/bin/ssh"
-        args.append(command)
         
-        if let sharedsshport, sharedsshport != "-1" {
-            args.append("-p")
-            args.append(sharedsshport)
+        // Return early if directory already exists
+        guard !fileManager.locationExists(at: keyPath, kind: .folder) else {
+            return
         }
-        if let sharedsshkeypathandidentityfile,
-           sharedsshkeypathandidentityfile.isEmpty == false
-        {
-            args.append("-i")
-            args.append(sharedsshkeypathandidentityfile)
+        
+        let keyPathURL = URL(fileURLWithPath: keyPath)
+        
+        do {
+            try fileManager.createDirectory(
+                at: keyPathURL,
+                withIntermediateDirectories: true,
+                attributes: nil
+            )
+        } catch {
+            throw SSHKeyError.keyDirectoryCreationFailed
         }
-        args.append(offsiteUsername + "@" + offsiteServer)
-        return args.joined(separator: " ")
     }
-
-    // Create local key with ssh-keygen
-    // Generate a passwordless RSA keyfile -N sets password, "" makes it blank
-    // ssh-keygen -t rsa -N "" -f $ssh-keypath
-    public func argumentscreatekey() -> [String]? {
-        var args = [String]()
-        args.append("-t")
-        args.append("rsa")
-        args.append("-N")
-        args.append("")
-        args.append("-f")
-        if let sharedsshkeypathandidentityfile,
-           sharedsshkeypathandidentityfile.isEmpty == false
-        {
-            if sharedsshkeypathandidentityfile.first == "~" {
-                //replace the tilde with full Homecatalog
-                // The Process object does not expand the tilde character when using ssh-keygen
-                if let userHomeDirectoryPath {
-                    let tempsharedsshkeypathandidentityfile = sharedsshkeypathandidentityfile.replacingOccurrences(of: "~", with: userHomeDirectoryPath)
-                    args.append(tempsharedsshkeypathandidentityfile)
-                }
-            } else {
-                args.append(sharedsshkeypathandidentityfile)
-            }
-            
+    
+    /// Generates arguments for ssh-copy-id command to copy public key to remote server
+    /// - Parameters:
+    ///   - offsiteServer: Remote server address
+    ///   - offsiteUsername: Username on remote server
+    /// - Returns: Array of command arguments
+    /// - Throws: SSHKeyError for invalid inputs
+    public func argumentsSSHCopyID(offsiteServer: String,
+                                   offsiteUsername: String) throws -> [String] {
+        try validateServerAndUsername(server: offsiteServer, username: offsiteUsername)
+        
+        var args = [Constants.sshCopyIDCommand]
+        args.append("-i")
+        
+        if let sharedPath = sharedSSHKeyPathAndIdentityFile,
+           !sharedPath.isEmpty,
+           let port = sharedSSHPort,
+           port != Constants.noPortValue {
+            try validatePort(port)
+            args.append(sharedPath)
+            args.append("-p")
+            args.append(port)
         } else {
-            if let sshkeypath {
-                args.append(sshkeypath + "/" + identityfileonly)
+            guard let keyPath = sshKeyPathAndIdentityFile else {
+                throw SSHKeyError.invalidPath
             }
+            args.append(keyPath)
         }
+        
+        args.append("\(offsiteUsername)@\(offsiteServer)")
         return args
     }
-
-    public func validatepublickeypresent() -> Bool {
-        if let allsshkeyfiles {
-            let publickey = identityfileonly.appending(".pub")
-            return allsshkeyfiles.contains(publickey)
+    
+    /// Generates arguments for SSH command to verify remote public key
+    /// - Parameters:
+    ///   - offsiteServer: Remote server address
+    ///   - offsiteUsername: Username on remote server
+    /// - Returns: Array of command arguments
+    /// - Throws: SSHKeyError for invalid inputs
+    public func argumentsVerifyRemotePublicSSHKey(offsiteServer: String,
+                                                  offsiteUsername: String) throws -> [String] {
+        try validateServerAndUsername(server: offsiteServer, username: offsiteUsername)
+        
+        var args = [Constants.sshCommand]
+        
+        if let port = sharedSSHPort, port != Constants.noPortValue {
+            try validatePort(port)
+            args.append("-p")
+            args.append(port)
         }
-        return false
+        
+        if let sharedPath = sharedSSHKeyPathAndIdentityFile, !sharedPath.isEmpty {
+            args.append("-i")
+            args.append(sharedPath)
+        }
+        
+        args.append("\(offsiteUsername)@\(offsiteServer)")
+        return args
     }
-
-    public init(sharedsshport: String?,
-                sharedsshkeypathandidentityfile: String?)
-    {
-        self.sharedsshport = sharedsshport
-        self.sharedsshkeypathandidentityfile = sharedsshkeypathandidentityfile
-    }
-
-    // For test only
-    public func testcreatesshkeyrootpath() -> URL? {
-            if let sshkeypath {
-                let sshkeypathlURL = URL(fileURLWithPath: sshkeypath)
-                return sshkeypathlURL
+    
+    /// Generates arguments for ssh-keygen to create a new RSA key pair
+    /// - Returns: Array of command arguments for ssh-keygen
+    /// - Throws: SSHKeyError if path is invalid
+    public func argumentsCreateKey() throws -> [String] {
+        var args = ["-t", "rsa", "-N", "", "-f"]
+        
+        if let sharedPath = sharedSSHKeyPathAndIdentityFile, !sharedPath.isEmpty {
+            if sharedPath.first == "~" {
+                guard let userHome = userHomeDirectoryPath else {
+                    throw SSHKeyError.homeDirectoryNotFound
+                }
+                let expandedPath = sharedPath.replacingOccurrences(of: "~", with: userHome)
+                args.append(expandedPath)
+            } else {
+                args.append(sharedPath)
             }
-            return nil
+        } else {
+            guard let keyPath = sshKeyPath else {
+                throw SSHKeyError.invalidPath
+            }
+            args.append(keyPath + "/" + identityFileOnly)
         }
+        
+        return args
+    }
+    
+    /// Checks if the public key file exists in the SSH key directory
+    /// - Returns: true if public key exists, false otherwise
+    public func validatePublicKeyPresent() -> Bool {
+        guard let keyFiles = allSSHKeyFiles else { return false }
+        let publicKeyName = identityFileOnly + ".pub"
+        return keyFiles.contains(publicKeyName)
+    }
+    
+    // MARK: - Private Helper Methods
+    
+    /// Parses SSH key path, handling tilde expansion and path extraction
+    /// - Parameters:
+    ///   - path: The path to parse (may start with ~)
+    ///   - userHome: User's home directory
+    ///   - includeIdentityFile: Whether to include the identity file in the result
+    /// - Returns: Parsed path string
+    private func parseSSHKeyPath(_ path: String,
+                                 userHome: String,
+                                 includeIdentityFile: Bool) -> String {
+        guard path.first == "~" else {
+            // Non-tilde path, return default
+            let basePath = userHome + "/" + Constants.defaultSSHDirectory
+            return includeIdentityFile ? basePath + "/" + Constants.defaultIdentityFile : basePath
+        }
+        
+        var components = path.split(separator: "/")
+        guard components.count > 2 else {
+            // Invalid path structure, return default
+            let basePath = userHome + "/" + Constants.defaultSSHDirectory
+            return includeIdentityFile ? basePath + "/" + Constants.defaultIdentityFile : basePath
+        }
+        
+        // Remove the identity file if we don't want it
+        if !includeIdentityFile {
+            components.removeLast()
+        }
+        
+        // Remove the tilde and construct path
+        let pathWithoutTilde = components.joined(separator: "/").dropFirst()
+        return userHome + "/" + pathWithoutTilde
+    }
+    
+    /// Validates server address and username for security
+    /// - Parameters:
+    ///   - server: Server address to validate
+    ///   - username: Username to validate
+    /// - Throws: SSHKeyError if inputs contain potentially malicious characters
+    private func validateServerAndUsername(server: String, username: String) throws {
+        let invalidCharacters = CharacterSet(charactersIn: ";|&$`\n\r")
+        
+        guard server.rangeOfCharacter(from: invalidCharacters) == nil else {
+            throw SSHKeyError.invalidServerAddress
+        }
+        
+        guard username.rangeOfCharacter(from: invalidCharacters) == nil else {
+            throw SSHKeyError.invalidUsername
+        }
+        
+        guard !server.isEmpty, !username.isEmpty else {
+            throw SSHKeyError.invalidServerAddress
+        }
+    }
+    
+    /// Validates that port is a valid number
+    /// - Parameter port: Port string to validate
+    /// - Throws: SSHKeyError if port is invalid
+    private func validatePort(_ port: String) throws {
+        guard let portNumber = Int(port), portNumber > 0, portNumber <= 65535 else {
+            throw SSHKeyError.invalidPort
+        }
+    }
 }
 
-extension FileManager {
-    func keypathlocationExists(at path: String, kind: LocationKind) -> Bool {
-        var isFolder: ObjCBool = false
+// MARK: - FileManager Extension
 
+extension FileManager {
+    /// Checks if a location exists at the specified path and matches the expected kind
+    /// - Parameters:
+    ///   - path: File system path to check
+    ///   - kind: Expected location kind (file or folder)
+    /// - Returns: true if location exists and matches the kind
+    func locationExists(at path: String, kind: LocationKind) -> Bool {
+        var isFolder: ObjCBool = false
+        
         guard fileExists(atPath: path, isDirectory: &isFolder) else {
             return false
         }
-
+        
         switch kind {
         case .file: return !isFolder.boolValue
         case .folder: return isFolder.boolValue
@@ -257,11 +329,12 @@ extension FileManager {
     }
 }
 
-/// Enum describing various kinds of locations that can be found on a file system.
+// MARK: - Location Kind Enum
+
+/// Describes the type of file system location
 public enum LocationKind {
-    /// A file can be found at the location.
+    /// A file can be found at the location
     case file
-    /// A folder can be found at the location.
+    /// A folder can be found at the location
     case folder
 }
-

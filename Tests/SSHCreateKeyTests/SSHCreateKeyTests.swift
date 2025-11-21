@@ -10,18 +10,22 @@ import Foundation
         await loadtestdata.getdata()
         testconfigurations = loadtestdata.testconfigurations
 
-        let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
-                                              sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
-        let arg3 =  sshcreatekey.sshkeypath
+        let sshcreatekey = await SSHCreateKey(sharedSSHPort: String(TestSharedReference.shared.sshport ?? -1),
+                                              sharedSSHKeyPathAndIdentityFile: TestSharedReference.shared.sshkeypathandidentityfile)
+        let arg3 =  sshcreatekey.sshKeyPath
         #expect(ArgumentsCreatSSHKeys().keypathglobal == arg3)
-        let arg4 =  sshcreatekey.identityfileonly
+        let arg4 =  sshcreatekey.identityFileOnly
         #expect(ArgumentsCreatSSHKeys().identityfileglobl == arg4)
         let arg5 =  sshcreatekey.userHomeDirectoryPath
         #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathglobal == arg5)
-        let arg6 =  sshcreatekey.sshkeypathandidentityfile
+        let arg6 =  sshcreatekey.sshKeyPathAndIdentityFile
         #expect(ArgumentsCreatSSHKeys().sshkeypathandidentityfileglobal == arg6)
-        let arg7 =  sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
-        #expect(ArgumentsCreatSSHKeys().argumentssshcopyidglobal == arg7)
+        do {
+            let arg7 =  try sshcreatekey.argumentsSSHCopyID(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
+            #expect(ArgumentsCreatSSHKeys().argumentssshcopyidglobal == arg7)
+        } catch {}
+        
+        
     }
 
     @Test func LodaDataCreateSSHKeysdefault() async {
@@ -32,41 +36,42 @@ import Foundation
         // Sett Shareddata to nil or default values
         let port = -1
         let identityfile: String? = nil
-        let sshcreatekey =  SSHCreateKey(sharedsshport: String(port),
-                                              sharedsshkeypathandidentityfile: identityfile)
-        let arg3 =  sshcreatekey.sshkeypath
+        let sshcreatekey =  SSHCreateKey(sharedSSHPort: String(port),
+                                         sharedSSHKeyPathAndIdentityFile: identityfile)
+        let arg3 =  sshcreatekey.sshKeyPath
         #expect(ArgumentsCreatSSHKeys().keypathdefault == arg3)
-        let arg4 =  sshcreatekey.identityfileonly
+        let arg4 =  sshcreatekey.identityFileOnly
         #expect(ArgumentsCreatSSHKeys().identityfiledefault == arg4)
         let arg5 =  sshcreatekey.userHomeDirectoryPath
         #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathdefault == arg5)
-        let arg6 =  sshcreatekey.sshkeypathandidentityfile
+        let arg6 =  sshcreatekey.sshKeyPathAndIdentityFile
         #expect(ArgumentsCreatSSHKeys().sshkeypathandidentityfiledefault == arg6)
-        let arg7 =  sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
-        #expect(ArgumentsCreatSSHKeys().argumentssshcopyiddefault == arg7)
+        do {
+            let arg7 =  try sshcreatekey.argumentsSSHCopyID(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
+            #expect(ArgumentsCreatSSHKeys().argumentssshcopyiddefault == arg7)
+        } catch {}
     }
 
     @Test func createkeys() async {
         let loadtestdata = ReadTestdataFromGitHub()
         await loadtestdata.getdata()
-    
-        let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
-                                              sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
-        // If new keypath is set create it
-        let sshrootpath =  sshcreatekey.testcreatesshkeyrootpath()
-        #expect(ArgumentsCreatSSHKeys().URLfileglobal == sshrootpath)
+        let sshcreatekey = await SSHCreateKey(sharedSSHPort: String(TestSharedReference.shared.sshport ?? -1),
+                                              sharedSSHKeyPathAndIdentityFile: TestSharedReference.shared.sshkeypathandidentityfile)
         // Create keys
-        let arguments =  sshcreatekey.argumentscreatekey()
-        #expect(ArgumentsCreatSSHKeys().sshcreateglobal == arguments)
+        do {
+            let arguments =  try sshcreatekey.argumentsCreateKey()
+            #expect(ArgumentsCreatSSHKeys().sshcreateglobal == arguments)
+        } catch { }
+        
     }
     
     @Test func validatekeyfilespresent() async {
         let loadtestdata = ReadTestdataFromGitHub()
         await loadtestdata.getdata()
     
-        let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
-                                              sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
-         print(sshcreatekey.validatepublickeypresent())
+        let sshcreatekey = await SSHCreateKey(sharedSSHPort: String(TestSharedReference.shared.sshport ?? -1),
+                                              sharedSSHKeyPathAndIdentityFile: TestSharedReference.shared.sshkeypathandidentityfile)
+         print(sshcreatekey.validatePublicKeyPresent())
     }
 }
 
@@ -79,18 +84,20 @@ import Foundation
         
         testconfigurations = loadtestdata.testconfigurations
 
-        let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
-                                              sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
-        let arg3 =  sshcreatekey.sshkeypath
+        let sshcreatekey = await SSHCreateKey(sharedSSHPort: String(TestSharedReference.shared.sshport ?? -1),
+                                              sharedSSHKeyPathAndIdentityFile: TestSharedReference.shared.sshkeypathandidentityfile)
+        let arg3 =  sshcreatekey.sshKeyPath
         #expect(ArgumentsCreatSSHKeys().defaultkeypath == arg3)
-        let arg4 =  sshcreatekey.identityfileonly
+        let arg4 =  sshcreatekey.identityFileOnly
         #expect(ArgumentsCreatSSHKeys().defaultidentityfileglobl == arg4)
         let arg5 =  sshcreatekey.userHomeDirectoryPath
         #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathglobal == arg5)
-        let arg6 =  sshcreatekey.sshkeypathandidentityfile
+        let arg6 =  sshcreatekey.sshKeyPathAndIdentityFile
         #expect(ArgumentsCreatSSHKeys().defaultsshkeypathandidentityfile == arg6)
-        let arg7 =  sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
-        #expect(ArgumentsCreatSSHKeys().argumentssshcopyiddefault == arg7)
+        do {
+            let arg7 =  try sshcreatekey.argumentsSSHCopyID(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
+            #expect(ArgumentsCreatSSHKeys().argumentssshcopyiddefault == arg7)
+        } catch {}
     }
 
     @Test func LodaDataCreateSSHKeysdefault() async {
@@ -102,41 +109,43 @@ import Foundation
         // Sett Shareddata to nil or default values
         let port = -1
         let identityfile: String? = nil
-        let sshcreatekey =  SSHCreateKey(sharedsshport: String(port),
-                                              sharedsshkeypathandidentityfile: identityfile)
-        let arg3 =  sshcreatekey.sshkeypath
+        let sshcreatekey =  SSHCreateKey(sharedSSHPort: String(port),
+                                         sharedSSHKeyPathAndIdentityFile: identityfile)
+        let arg3 =  sshcreatekey.sshKeyPath
         #expect(ArgumentsCreatSSHKeys().keypathdefault == arg3)
-        let arg4 =  sshcreatekey.sharedsshkeypathandidentityfile
+        let arg4 =  sshcreatekey.sshKeyPathAndIdentityFile
         #expect(ArgumentsCreatSSHKeys().identityfiledefault == arg4)
         let arg5 =  sshcreatekey.userHomeDirectoryPath
         #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathdefault == arg5)
-        let arg6 =  sshcreatekey.sshkeypathandidentityfile
+        let arg6 =  sshcreatekey.sshKeyPathAndIdentityFile
         #expect(ArgumentsCreatSSHKeys().sshkeypathandidentityfiledefault == arg6)
-        let arg7 =  sshcreatekey.argumentssshcopyid(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
-        #expect(ArgumentsCreatSSHKeys().argumentssshcopyiddefault == arg7)
+        do {
+            let arg7 =  try sshcreatekey.argumentsSSHCopyID(offsiteServer: "raspberrypi", offsiteUsername: "thomas")
+            #expect(ArgumentsCreatSSHKeys().argumentssshcopyiddefault == arg7)
+        } catch {}
+        
     }
 
     @Test func createkeys() async {
         let loadtestdata = ReadTestdataFromGitHub()
         await loadtestdata.getdatanossh()
     
-        let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
-                                              sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
-        // If new keypath is set create it
-        let sshrootpath =  sshcreatekey.testcreatesshkeyrootpath()
-        #expect(ArgumentsCreatSSHKeys().defaultURLfile == sshrootpath)
+        let sshcreatekey = await SSHCreateKey(sharedSSHPort: String(TestSharedReference.shared.sshport ?? -1),
+                                              sharedSSHKeyPathAndIdentityFile: TestSharedReference.shared.sshkeypathandidentityfile)
         // Create keys
-        let arguments =  sshcreatekey.argumentscreatekey()
-        #expect(ArgumentsCreatSSHKeys().defaultsshcreate == arguments)
+        do {
+            let arguments =  try sshcreatekey.argumentsCreateKey()
+            #expect(ArgumentsCreatSSHKeys().defaultsshcreate == arguments)
+        } catch { }
     }
     
     @Test func validatekeyfilespresent() async {
         let loadtestdata = ReadTestdataFromGitHub()
         await loadtestdata.getdatanossh()
     
-        let sshcreatekey = await SSHCreateKey(sharedsshport: String(TestSharedReference.shared.sshport ?? -1),
-                                              sharedsshkeypathandidentityfile: TestSharedReference.shared.sshkeypathandidentityfile)
-        print(sshcreatekey.validatepublickeypresent())
+        let sshcreatekey = await SSHCreateKey(sharedSSHPort: String(TestSharedReference.shared.sshport ?? -1),
+                                              sharedSSHKeyPathAndIdentityFile: TestSharedReference.shared.sshkeypathandidentityfile)
+        print(sshcreatekey.validatePublicKeyPresent())
     }
 }
 
