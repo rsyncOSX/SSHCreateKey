@@ -75,8 +75,11 @@ public final class SSHCreateKey {
     /// Returns only the identity file name (e.g., "id_rsa" or custom name)
     public var identityFileOnly: String {
         guard let sharedPath = sharedSSHKeyPathAndIdentityFile,
-              !sharedPath.isEmpty,
-              sharedPath.first == "~" else {
+              !sharedPath.isEmpty else {
+            return Constants.defaultIdentityFile
+        }
+        
+        guard sharedPath.first == "~" else {
             return Constants.defaultIdentityFile
         }
         
@@ -266,14 +269,16 @@ public final class SSHCreateKey {
             return includeIdentityFile ? basePath + "/" + Constants.defaultIdentityFile : basePath
         }
         
+        // Remove the tilde (first component)
+        components.removeFirst()
+        
         // Remove the identity file if we don't want it
         if !includeIdentityFile {
             components.removeLast()
         }
         
-        // Remove the tilde and construct path
-        let pathWithoutTilde = components.joined(separator: "/").dropFirst()
-        return userHome + "/" + pathWithoutTilde
+        // Construct path - components already have proper structure
+        return userHome + "/" + components.joined(separator: "/")
     }
     
     /// Validates server address and username for security

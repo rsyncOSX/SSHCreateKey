@@ -15,14 +15,14 @@ struct ArgumentsCreatSSHKeys {
     let userHomeDirectoryPathglobal = "/Users/thomas"
     let sshkeypathandidentityfileglobal = "/Users/thomas/.ssh_global/global"
     let defaultsshkeypathandidentityfile = "/Users/thomas/.ssh/id_rsa"
-    let argumentssshcopyidglobal = ["/usr/bin/ssh-copy-id -i ~/.ssh_global/global -p 2222 thomas@raspberrypi"]
+    let argumentssshcopyidglobal = ["/usr/bin/ssh-copy-id","-i","~/.ssh_global/global","-p", "2222","thomas@raspberrypi"]
     let defaultargumentssshcopyid = "/usr/bin/ssh-copy-id -i ~/.ssh_global/global -p 2222 thomas@raspberrypi"
 
     let keypathdefault = "/Users/thomas/.ssh"
     let identityfiledefault = "id_rsa"
     let userHomeDirectoryPathdefault = "/Users/thomas"
     let sshkeypathandidentityfiledefault = "/Users/thomas/.ssh/id_rsa"
-    let argumentssshcopyiddefault = ["/usr/bin/ssh-copy-id -i /Users/thomas/.ssh/id_rsa thomas@raspberrypi"]
+    let argumentssshcopyiddefault = ["/usr/bin/ssh-copy-id","-i","/Users/thomas/.ssh/id_rsa","thomas@raspberrypi"]
     
     let URLfileglobal = URL(fileURLWithPath:"/Users/thomas/.ssh_global")
     let defaultURLfile = URL(fileURLWithPath:"/Users/thomas/.ssh/")

@@ -113,7 +113,7 @@ import Foundation
                                          sharedSSHKeyPathAndIdentityFile: identityfile)
         let arg3 =  sshcreatekey.sshKeyPath
         #expect(ArgumentsCreatSSHKeys().keypathdefault == arg3)
-        let arg4 =  sshcreatekey.sshKeyPathAndIdentityFile
+        let arg4 =  sshcreatekey.identityFileOnly
         #expect(ArgumentsCreatSSHKeys().identityfiledefault == arg4)
         let arg5 =  sshcreatekey.userHomeDirectoryPath
         #expect(ArgumentsCreatSSHKeys().userHomeDirectoryPathdefault == arg5)
