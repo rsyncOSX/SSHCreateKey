@@ -1,5 +1,7 @@
 ## Hi there 👋
 
+Version 2.0.0
+
 This package is code for assisting users to create SSH identityfile and key in RsyncUI. The user can either let RsyncUI assist in creating SSH identityfile and key in RsyncUI, or create it by commandline.
 
 The package is used in [RsyncUI](https://github.com/rsyncOSX/RsyncUI).
