@@ -11,7 +11,7 @@ struct TestdataFromGitHub {
     let urlSession = URLSession.shared
     let jsonDecoder = JSONDecoder()
 
-    func loadanddecodestringdata<T: Codable>(_ t: T.Type, fromwhere: String) async throws -> T? {
+    func loadanddecodestringdata<T: Codable>(_: T.Type, fromwhere: String) async throws -> T? {
         if let url = URL(string: fromwhere) {
             let (data, _) = try await urlSession.gettestdata(for: url)
             return try jsonDecoder.decode(T.self, from: data)
@@ -19,8 +19,8 @@ struct TestdataFromGitHub {
             return nil
         }
     }
-    
-    func loadanddecodearraydata<T: Codable>(_ t: T.Type, fromwhere: String) async throws -> [T]? {
+
+    func loadanddecodearraydata<T: Codable>(_: T.Type, fromwhere: String) async throws -> [T]? {
         if let url = URL(string: fromwhere) {
             let (data, _) = try await urlSession.gettestdata(for: url)
             return try jsonDecoder.decode([T].self, from: data)
