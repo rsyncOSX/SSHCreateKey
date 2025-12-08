@@ -33,61 +33,64 @@ struct TestUserConfiguration: Codable {
     var confirmexecute: Int?
 
     @MainActor private func setuserconfigdata() {
-        if rsyncversion3 == 1 {
-            TestSharedReference.shared.rsyncversion3 = true
-        } else {
-            TestSharedReference.shared.rsyncversion3 = false
-        }
-        if addsummarylogrecord == 1 {
-            TestSharedReference.shared.addsummarylogrecord = true
-        } else {
-            TestSharedReference.shared.addsummarylogrecord = false
-        }
-        if logtofile == 1 {
-            TestSharedReference.shared.logtofile = true
-        } else {
-            TestSharedReference.shared.logtofile = false
-        }
-        if monitornetworkconnection == 1 {
-            TestSharedReference.shared.monitornetworkconnection = true
-        } else {
-            TestSharedReference.shared.monitornetworkconnection = false
-        }
-        if localrsyncpath != nil {
-            TestSharedReference.shared.localrsyncpath = localrsyncpath
-        } else {
-            TestSharedReference.shared.localrsyncpath = nil
-        }
-        if pathforrestore != nil {
-            TestSharedReference.shared.pathforrestore = pathforrestore
-        } else {
-            TestSharedReference.shared.pathforrestore = nil
-        }
+        setRsyncConfig()
+        setLogConfig()
+        setPathConfig()
+        setSSHConfig()
+        setEnvironmentConfig()
+        setErrorConfig()
+        setConfirmConfig()
+    }
+
+    @MainActor
+    private func setRsyncConfig() {
+        TestSharedReference.shared.rsyncversion3 = (rsyncversion3 == 1)
+    }
+
+    @MainActor
+    private func setLogConfig() {
+        TestSharedReference.shared.addsummarylogrecord = (addsummarylogrecord == 1)
+        TestSharedReference.shared.logtofile = (logtofile == 1)
+        TestSharedReference.shared.monitornetworkconnection = (monitornetworkconnection == 1)
+    }
+
+    @MainActor
+    private func setPathConfig() {
+        TestSharedReference.shared.localrsyncpath = localrsyncpath
+        TestSharedReference.shared.pathforrestore = pathforrestore
         if Int(marknumberofdayssince) ?? 0 > 0 {
             TestSharedReference.shared.marknumberofdayssince = Int(marknumberofdayssince) ?? 0
         }
+    }
+
+    @MainActor
+    private func setSSHConfig() {
         if sshkeypathandidentityfile != nil {
             TestSharedReference.shared.sshkeypathandidentityfile = sshkeypathandidentityfile
         }
         if sshport != nil {
             TestSharedReference.shared.sshport = sshport
         }
+    }
+
+    @MainActor
+    private func setEnvironmentConfig() {
         if environment != nil {
             TestSharedReference.shared.environment = environment
         }
         if environmentvalue != nil {
             TestSharedReference.shared.environmentvalue = environmentvalue
         }
-        if checkforerrorinrsyncoutput == 1 {
-            TestSharedReference.shared.checkforerrorinrsyncoutput = true
-        } else {
-            TestSharedReference.shared.checkforerrorinrsyncoutput = false
-        }
-        if confirmexecute == 1 {
-            TestSharedReference.shared.confirmexecute = true
-        } else {
-            TestSharedReference.shared.confirmexecute = false
-        }
+    }
+
+    @MainActor
+    private func setErrorConfig() {
+        TestSharedReference.shared.checkforerrorinrsyncoutput = (checkforerrorinrsyncoutput == 1)
+    }
+
+    @MainActor
+    private func setConfirmConfig() {
+        TestSharedReference.shared.confirmexecute = (confirmexecute == 1)
     }
 
     // Used when reading JSON data from store
@@ -113,58 +116,22 @@ struct TestUserConfiguration: Codable {
     // Default values user configuration
     @discardableResult
     @MainActor init() {
-        if TestSharedReference.shared.rsyncversion3 {
-            rsyncversion3 = 1
-        } else {
-            rsyncversion3 = -1
-        }
-        if TestSharedReference.shared.addsummarylogrecord {
-            addsummarylogrecord = 1
-        } else {
-            addsummarylogrecord = -1
-        }
-        if TestSharedReference.shared.logtofile {
-            logtofile = 1
-        } else {
-            logtofile = -1
-        }
-        if TestSharedReference.shared.monitornetworkconnection {
-            monitornetworkconnection = 1
-        } else {
-            monitornetworkconnection = -1
-        }
-        if TestSharedReference.shared.localrsyncpath != nil {
-            localrsyncpath = TestSharedReference.shared.localrsyncpath
-        } else {
-            localrsyncpath = nil
-        }
-        if TestSharedReference.shared.pathforrestore != nil {
-            pathforrestore = TestSharedReference.shared.pathforrestore
-        } else {
-            pathforrestore = nil
-        }
+        rsyncversion3 = TestUserConfiguration.boolToInt(TestSharedReference.shared.rsyncversion3)
+        addsummarylogrecord = TestUserConfiguration.boolToInt(TestSharedReference.shared.addsummarylogrecord)
+        logtofile = TestUserConfiguration.boolToInt(TestSharedReference.shared.logtofile)
+        monitornetworkconnection = TestUserConfiguration.boolToInt(TestSharedReference.shared.monitornetworkconnection)
+        localrsyncpath = TestSharedReference.shared.localrsyncpath
+        pathforrestore = TestSharedReference.shared.pathforrestore
         marknumberofdayssince = String(TestSharedReference.shared.marknumberofdayssince)
-        if TestSharedReference.shared.sshkeypathandidentityfile != nil {
-            sshkeypathandidentityfile = TestSharedReference.shared.sshkeypathandidentityfile
-        }
-        if TestSharedReference.shared.sshport != nil {
-            sshport = TestSharedReference.shared.sshport
-        }
-        if TestSharedReference.shared.environment != nil {
-            environment = TestSharedReference.shared.environment
-        }
-        if TestSharedReference.shared.environmentvalue != nil {
-            environmentvalue = TestSharedReference.shared.environmentvalue
-        }
-        if TestSharedReference.shared.checkforerrorinrsyncoutput == true {
-            checkforerrorinrsyncoutput = 1
-        } else {
-            checkforerrorinrsyncoutput = -1
-        }
-        if TestSharedReference.shared.confirmexecute == true {
-            confirmexecute = 1
-        } else {
-            confirmexecute = -1
-        }
+        sshkeypathandidentityfile = TestSharedReference.shared.sshkeypathandidentityfile
+        sshport = TestSharedReference.shared.sshport
+        environment = TestSharedReference.shared.environment
+        environmentvalue = TestSharedReference.shared.environmentvalue
+        checkforerrorinrsyncoutput = TestUserConfiguration.boolToInt(TestSharedReference.shared.checkforerrorinrsyncoutput)
+        confirmexecute = TestUserConfiguration.boolToInt(TestSharedReference.shared.confirmexecute)
+    }
+
+    private static func boolToInt(_ value: Bool?) -> Int {
+        return value == true ? 1 : -1
     }
 }
