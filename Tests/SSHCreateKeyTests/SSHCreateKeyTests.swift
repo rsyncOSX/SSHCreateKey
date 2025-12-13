@@ -5,7 +5,7 @@ import Testing
 @Suite final class TestCreateSSHkeys {
     var testconfigurations: [TestSynchronizeConfiguration]?
 
-    @Test func LodaDataCreateSSHKeys() async {
+    @Test func lodaDataCreateSSHKeys() async {
         let loadtestdata = ReadTestdataFromGitHub()
         await loadtestdata.getdata()
         testconfigurations = loadtestdata.testconfigurations
@@ -26,7 +26,7 @@ import Testing
         } catch {}
     }
 
-    @Test func LodaDataCreateSSHKeysdefault() async {
+    @Test func lodaDataCreateSSHKeysdefault() async {
         let loadtestdata = ReadTestdataFromGitHub()
         await loadtestdata.getdata()
         testconfigurations = loadtestdata.testconfigurations
@@ -75,7 +75,7 @@ import Testing
 @Suite final class TestCreateSSHkeysNOSSH {
     var testconfigurations: [TestSynchronizeConfiguration]?
 
-    @Test func LodaDataCreateSSHKeys() async {
+    @Test func lodaDataCreateSSHKeys() async {
         let loadtestdata = ReadTestdataFromGitHub()
         await loadtestdata.getdatanossh()
 
@@ -97,7 +97,7 @@ import Testing
         } catch {}
     }
 
-    @Test func LodaDataCreateSSHKeysdefault() async {
+    @Test func lodaDataCreateSSHKeysdefault() async {
         let loadtestdata = ReadTestdataFromGitHub()
         await loadtestdata.getdatanossh()
 

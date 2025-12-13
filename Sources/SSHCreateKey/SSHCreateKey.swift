@@ -104,8 +104,8 @@ public final class SSHCreateKey {
 
     /// User's home directory path
     public var userHomeDirectoryPath: String? {
-        let pw = getpwuid(getuid())
-        if let home = pw?.pointee.pw_dir {
+        let pwd = getpwuid(getuid())
+        if let home = pwd?.pointee.pw_dir {
             let homePath = FileManager.default.string(
                 withFileSystemRepresentation: home,
                 length: Int(strlen(home))

@@ -1,12 +1,6 @@
-disabled_rules:
-  - line_length
-  - file_length
-  - type_body_length
-  - function_body_length
-  - trailing_comma
-  - function_parameter_count
-  - identifier_name
+# Paths to exclude from linting
+excluded:
+  - .build
 
-opt_in_rules:
-  - force_unwrapping
-  
+  # Adjust specific rule settings
+line_length: 135
